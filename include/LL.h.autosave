@@ -1,0 +1,24 @@
+#ifndef LL_H
+#define LL_H
+
+template <typename T>
+class LL
+{
+private:
+    struct Node
+    {
+        T data;
+        Node* prev;
+        Node* next;
+        Node(T _data) : data(_data), prev(NULL), next(nullptr) {}
+    };
+    
+    Node* head;
+    Node* tail;
+    int size;
+
+public:
+    LL() : head(nullptr), tail(nullptr), size(0) {}
+};
+
+#endif // LL_H

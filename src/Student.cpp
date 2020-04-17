@@ -109,6 +109,38 @@ bool Student::operator>=(const Student &other) const
     return false;
 }
 
+// static comparison function
+int Student::gpaCmp(const Student &l, const Student &r)
+{
+    if (l.getGPA() == r.getGPA()) return 0;
+    if (l.getGPA() > r.getGPA()) return 1;
+    return -1;
+}
+
+int Student::fnCmp(const Student &l, const Student &r)
+{
+    std::string _l = l.name.first + l.name.second,
+                _r = r.name.first + r.name.second;
+    if (_l == _r) return 0;
+    if (_l > _r) return 1;
+    return -1;
+}
+
+int Student::idCmp(const Student &l, const Student &r)
+{
+    if (l.ID == r.ID) return 0;
+    if (l.ID > r.ID) return 1;
+    return -1;
+}
+
+int Student::lnCmp(const Student &l, const Student &r)
+{
+    std::string _l = l.name.second + l.name.first,
+                _r = r.name.second + r.name.first;
+    if (_l == _r) return 0;
+    if (_l > _r) return 1;
+    return -1;
+}
 
 double Student::getGPA() const
 {

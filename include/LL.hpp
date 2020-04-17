@@ -101,7 +101,32 @@ public:
         ++_size;
     }
 
-
+    template <typename compare>
+    void ordered_insert_special(const T& _data, compare cmp)
+    {
+        if (head == nullptr || cmp(_data,head->data) == -1)
+        {
+            insert_front(_data);
+            return;
+        }
+        else if (cmp(_data,tail->data) == 1)
+        {
+            insert_back(_data);
+            return;
+        }
+        Node* curr = head;
+        while(curr)
+        {
+            if (cmp(_data, curr->data) == -1) break;
+            curr = curr->next;
+        }
+        Node* temp = new Node(_data);
+        temp->next = curr;
+        temp->prev = curr->prev;
+        curr->prev->next = temp;
+        curr->prev = temp;
+        ++_size;
+    }
 
     void ordered_insert(const T& _data)
     {

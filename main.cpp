@@ -38,7 +38,7 @@ int main(int argc, char** argv)
         cin >> option;
 
         int selection = 0;
-        /*if (isValid(option)) selection = std::stoi(option);
+        if (isValid(option)) selection = std::stoi(option);
         switch(selection)
         {
         case 1: AddStudent(d); break;
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
         case 12: cout << d << endl; break;
         case 13: exit = true; break;
         default: cout << "Invalid selection!" << endl;
-        };*/
+        };
     }
 
     return 0;

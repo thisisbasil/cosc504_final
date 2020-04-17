@@ -113,7 +113,25 @@ void FindGPA(Database& d)
 }
 
 void Sort(Database& d)
-{}
+{
+    int option;
+    bool loop = true;
+    while (loop)
+    {
+        std::cout << "Sort by (1) First Name, (2) ID, or (3) GPA? ";
+        std::cin >> option;
+        if (option <= 1 || option >= 3)
+            std::cout << "Invalid option!" << std::endl;
+        else
+            loop = false;
+    }
+    switch (option)
+    {
+    case 1: d.sortByName(); break;
+    case 2: d.sortByID(); break;
+    case 3: d.sortByGPA(); break;
+    };
+}
 
 void FindStudent(Database& d)
 {
@@ -121,13 +139,19 @@ void FindStudent(Database& d)
 }
 
 void PrintHonors(Database& d)
-{}
+{
+    d.honorStudents();
+}
 
 void PrintWarn(Database& d)
-{}
+{
+    d.warningStudents();
+}
 
 void PrintFail(Database& d)
-{}
+{
+    d.failingStudents();
+}
 
 void RemoveCourse(Database& d)
 {}

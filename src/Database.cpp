@@ -70,16 +70,30 @@ void Database::insert(const Student& student)
 
 void Database::sortByID()
 {
+    LL<Student> other;
+    for (int i = 0; i < students.size(); ++i)
+    {
+        other.ordered_insert_special(students[i],Student::idCmp);
+    }
+    std::cout << other << std::endl;
 }
 
 void Database::sortByGPA()
 {
-
+    LL<Student> other;
+    for (int i = 0; i < students.size(); ++i)
+    {
+        other.ordered_insert_special(students[i],Student::gpaCmp);
+    }
 }
 
 void Database::sortByName()
 {
-
+    LL<Student> other;
+    for (int i = 0; i < students.size(); ++i)
+    {
+        other.ordered_insert_special(students[i],Student::fnCmp);
+    }
 }
 
 /*LL<Student>::iterator Database::findStudent(int ID)
@@ -110,31 +124,49 @@ LL<Student>::iterator Database::findStudent(const Student& s)
 void Database::honorStudents()
 {
     std::cout << "Honors students: " << std::endl;
-    for (const auto& a : students)
+    int count = 0;
+    for (int i = 0; i < students.size(); ++i)
     {
-        if (a.getGPA() >= gpaHonor)
-            std::cout << a << std::endl;
+        if (students[i].getGPA() >= gpaHonor)
+        {
+            ++count;
+            std::cout << std::setw(15) << students[i].getFirstName()
+                      << std::setw(15) << students[i].getLastName() << std::endl;
+        }
     }
+    std::cout << "Total number of honors students: " << count << std::endl;
 }
 
 void Database::warningStudents()
 {
     std::cout << "Warning students: " << std::endl;
-    for (const auto& a : students)
+    int count = 0;
+    for (int i = 0; i < students.size(); ++i)
     {
-       if (a.getGPA() <= gpaWarn)
-            std::cout << a << std::endl;
+        if (students[i].getGPA() <= gpaWarn)
+        {
+            ++count;
+            std::cout << std::setw(15) << students[i].getFirstName()
+                      << std::setw(15) << students[i].getLastName() << std::endl;
+        }
     }
+    std::cout << "Total number of students on warning: " << count << std::endl;
 }
 
 void Database::failingStudents()
 {
     std::cout << "Failing students: " << std::endl;
-    for (const auto& a : students)
+    int count = 0;
+    for (int i = 0; i < students.size(); ++i)
     {
-        if (a.getGPA() < gpaFail)
-            std::cout << a << std::endl;
+        if (students[i].getGPA() < gpaFail)
+        {
+            ++count;
+            std::cout << std::setw(15) << students[i].getFirstName()
+                      << std::setw(15) << students[i].getLastName() << std::endl;
+        }
     }
+    std::cout << "Total number of failing students: " << count << std::endl;
 }
 
 Student& Database::findStudent(const Student& s)

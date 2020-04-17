@@ -73,6 +73,11 @@ public:
     bool operator==(const Student&) const;
     bool operator!=(const Student&) const;
 
+    static int gpaCmp(const Student&, const Student&);
+    static int fnCmp(const Student&, const Student&);
+    static int idCmp(const Student&, const Student&);
+    static int lnCmp(const Student&, const Student&);
+
     friend std::ostream& operator<<(std::ostream& out, const Student& other)
     {
         out << std::setw(15) << std::left << other.name.first

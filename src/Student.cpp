@@ -10,6 +10,15 @@ public:
     const char * what() const noexcept { return msg.c_str(); }
 };
 
+class StudentPresent : public std::exception
+{
+private:
+    std::string msg;
+public:
+    StudentPresent() : msg("Student already present!") {}
+    const char * what() const noexcept { return msg.c_str(); }
+};
+
 void Student::insertCourse(const std::string& name, int credits, char grade)
 {
     insertCourse(course(name, credits, std::toupper(grade)));
@@ -19,6 +28,41 @@ void Student::insertCourse(const course& _course)
 {
     courses.push_back(_course);
 }
+
+void Student::removeCourse(int posn)
+{
+    if (posn < 0 || posn >= courses.size()) throw CourseNotFound();
+    courses.erase(courses.begin()+posn);
+}
+
+void Student::removeCourse(const course& c)
+{
+    auto i = courses.begin();
+    for(; i <= courses.end(); ++i)
+    {
+        if (*i == c)
+        {
+            courses.erase(i);
+            return;
+        }
+    }
+    throw CourseNotFound();
+}
+
+void Student::removeCourse(const std::string& s)
+{
+    auto i = courses.begin();
+    for(; i <= courses.end(); ++i)
+    {
+        if (i->name == s)
+        {
+            courses.erase(i);
+            return;
+        }
+    }
+    throw CourseNotFound();
+}
+
 
 std::vector<course>::iterator Student::begin()
 {
@@ -67,53 +111,27 @@ std::pair<std::string,std::string> Student::getName()
 
 bool Student::operator==(const Student &other) const
 {
-    if (name.second == other.name.second && name.first == other.name.first) return true;
+    if (name.second == other.name.second &&
+        name.first == other.name.first &&
+        ID == other.ID) return true;
     return false;
 }
 
 bool Student::operator!=(const Student &other) const
 {
-    if (name.second == other.name.second && name.first == other.name.first) return false;
+    if (name.second == other.name.second &&
+        name.first == other.name.first &&
+        ID == other.ID) return false;
     return true;
-}
-
-bool Student::operator<(const Student &other) const
-{
-    std::string l = name.second + name.first,
-                r = other.name.second + other.name.first;
-    if (l < r) return true;
-    return false;
-}
-
-bool Student::operator>(const Student &other) const
-{
-    std::string l = name.second + name.first,
-                r = other.name.second + other.name.first;
-    if (l > r) return true;
-    return false;
-}
-
-bool Student::operator<=(const Student &other) const
-{
-    std::string l = name.second + name.first,
-                r = other.name.second + other.name.first;
-    if (l <= r) return true;
-    return false;
-}
-
-bool Student::operator>=(const Student &other) const
-{
-    std::string l = name.second + name.first,
-                r = other.name.second + other.name.first;
-    if (l >= r) return true;
-    return false;
 }
 
 // static comparison function
 int Student::gpaCmp(const Student &l, const Student &r)
 {
-    if (l.getGPA() == r.getGPA()) return 0;
-    if (l.getGPA() > r.getGPA()) return 1;
+
+    int gpaL = l.getGPA(), gpaR = r.getGPA();
+    if (gpaL == gpaR) return 0;
+    if (gpaL > gpaR) return 1;
     return -1;
 }
 
@@ -133,10 +151,19 @@ int Student::idCmp(const Student &l, const Student &r)
     return -1;
 }
 
+int Student::lniCmp(const Student &l, const Student &r)
+{
+    std::string _l = l.name.second + l.name.first + std::to_string(l.ID),
+                _r = r.name.second + r.name.first + std::to_string(l.ID);
+    if (_l == _r) throw StudentPresent();
+    if (_l > _r) return 1;
+    return -1;
+}
+
 int Student::lnCmp(const Student &l, const Student &r)
 {
     std::string _l = l.name.second + l.name.first,
-                _r = r.name.second + r.name.first;
+                _r = r.name.second + r.name.first ;
     if (_l == _r) return 0;
     if (_l > _r) return 1;
     return -1;

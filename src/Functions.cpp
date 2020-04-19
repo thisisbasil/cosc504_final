@@ -55,7 +55,7 @@ course inputCourse()
     return course(std::move(trim(name)), credits, grade);
 }
 
-void AddStudent(Database& d)
+void AddStudent(Database& d, bool fromFile)
 {
     Student tempS = inputStudent();
     int num;
@@ -66,7 +66,19 @@ void AddStudent(Database& d)
         tempS.insertCourse(inputCourse());
         --num;
     }
-    d.insert(tempS);
+    if (!fromFile)
+        d.insert(tempS);
+    else
+    {
+        try 
+        {
+           
+        } 
+        catch (const std::exception& e) 
+        {
+            std::cout << e.what() << std::endl;
+        }
+    }
 }
 
 void AddCourse(Database& d)
@@ -81,7 +93,21 @@ void AddCourse(Database& d, const Student& s)
 }
 
 void ModifyGrade(Database& d)
-{}
+{
+    try 
+    {
+        auto s = d.findStudent(inputStudent());
+        
+        for (const auto& i : s)
+        {
+            
+        }
+    } 
+    catch (const std::exception& e) 
+    {
+        std::cout << e.what() << std::endl;
+    }
+}
 
 void RemoveStudent(Database& d)
 {
@@ -120,7 +146,7 @@ void Sort(Database& d)
     {
         std::cout << "Sort by (1) First Name, (2) ID, or (3) GPA? ";
         std::cin >> option;
-        if (option <= 1 || option >= 3)
+        if (option < 1 || option > 3)
             std::cout << "Invalid option!" << std::endl;
         else
             loop = false;
@@ -155,3 +181,11 @@ void PrintFail(Database& d)
 
 void RemoveCourse(Database& d)
 {}
+
+void CreateList(Database& d)
+{
+    std::string fname;
+    std::cout << "Enter name of output file: ";
+    std::cin >> fname;
+    d.writeToFile(fname);
+}

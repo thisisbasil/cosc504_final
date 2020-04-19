@@ -5,7 +5,7 @@
 #include "Student.h"
 
 bool isValid(const std::string&);
-void AddStudent(Database& d);
+void AddStudent(Database& d, bool fromFile = false);
 void AddCourse(Database& d);
 void AddCourse(Database& d, const Student& s);
 void RemoveStudent(Database& d);
@@ -18,5 +18,5 @@ void PrintHonors(Database& d);
 void PrintWarn(Database& d);
 void PrintFail(Database& d);
 void ModifyGrade(Database& d);
-
+void CreateList(Database& d);
 #endif // FUNCTIONS_H

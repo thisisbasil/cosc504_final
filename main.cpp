@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    std::string fname { "/home/basil/file" };
+    std::string fname { "/home/basil/school/programs/cosc504_final/input.txt" };
     if (argc == 2)
     {
         fname = argv[1];
@@ -27,14 +27,15 @@ int main(int argc, char** argv)
              << " 3. Remove student" << endl
              << " 4. Remove course for student" << endl
              << " 5. Find GPA for student" << endl
-             << " 6. Sort" << endl
+             << " 6. Sort" << endl                        // X
              << " 7. Search for student" << endl
              << " 8. Modify grade for student" << endl
-             << " 9. Print honors students" << endl
-             << "10. Print warnings" << endl
-             << "11. Print failing students" << endl
-             << "12. Print database" << endl
-             << "13. Exit" << endl << "? ";
+             << " 9. Print honors students" << endl       // X
+             << "10. Print warnings" << endl              // X
+             << "11. Print failing students" << endl      // X
+             << "12. Print database" << endl              // X
+             << "13. Create class list" << endl           // X
+             << "14. Exit" << endl << "? ";               // X
         cin >> option;
 
         int selection = 0;
@@ -53,7 +54,8 @@ int main(int argc, char** argv)
         case 10: PrintWarn(d); break;
         case 11: PrintFail(d); break;
         case 12: cout << d << endl; break;
-        case 13: exit = true; break;
+        case 13: CreateList(d); break;
+        case 14: exit = true; break;
         default: cout << "Invalid selection!" << endl;
         };
     }

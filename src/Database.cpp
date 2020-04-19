@@ -50,6 +50,17 @@ void Database::readFromFile(std::istream& file)
     }
 }
 
+void Database::writeToFile(const std::string &fname)
+{
+    std::ofstream file(fname.c_str());
+    writeToFile(file);
+}
+
+void Database::writeToFile(std::ostream& file)
+{
+    file << *this << endl;
+}
+
 void Database::insert(const std::string &fname, const std::string &lname, int ID)
 {
     Student s (fname,lname,ID);
@@ -60,7 +71,7 @@ void Database::insert(const Student& student)
 {
     try
     {
-        students.ordered_insert(student);
+        students.ordered_insert(student,Student::lniCmp);
     }
     catch (const std::exception& e)
     {
@@ -73,7 +84,7 @@ void Database::sortByID()
     LL<Student> other;
     for (int i = 0; i < students.size(); ++i)
     {
-        other.ordered_insert_special(students[i],Student::idCmp);
+        other.ordered_insert(students[i],Student::idCmp);
     }
     std::cout << other << std::endl;
 }
@@ -83,8 +94,10 @@ void Database::sortByGPA()
     LL<Student> other;
     for (int i = 0; i < students.size(); ++i)
     {
-        other.ordered_insert_special(students[i],Student::gpaCmp);
+        Student temp = students[i];
+        other.ordered_insert(temp,Student::gpaCmp);
     }
+    std::cout << other << std::endl;
 }
 
 void Database::sortByName()
@@ -92,8 +105,9 @@ void Database::sortByName()
     LL<Student> other;
     for (int i = 0; i < students.size(); ++i)
     {
-        other.ordered_insert_special(students[i],Student::fnCmp);
+        other.ordered_insert(students[i],Student::fnCmp);
     }
+    std::cout << other << std::endl;
 }
 
 /*LL<Student>::iterator Database::findStudent(int ID)
@@ -169,7 +183,33 @@ void Database::failingStudents()
     std::cout << "Total number of failing students: " << count << std::endl;
 }
 
+Student& Database::binsearch(const Student& s, int l, int r)
+{
+    if (l > r) throw NotPresent();
+    int mid = (l+r)/2;
+    Student& temp = students[mid];
+    if (Student::lniCmp(s,temp) == 0) return temp;
+    if (Student::lniCmp(s,temp) == 1) return binsearch(s,mid+1,r);
+    else return binsearch(s,l,mid-1);
+}
+
+int Database::binsearchpos(const Student &s, int l, int r)
+{
+    if (l > r) throw NotPresent();
+    int mid = (l+r)/2;
+    Student& temp = students[mid];
+    if (Student::lniCmp(s,temp) == 0) return mid;
+    if (Student::lniCmp(s,temp) == 1) return binsearchpos(s,mid+1,r);
+    else return binsearchpos(s,l,mid-1);
+}
+
 Student& Database::findStudent(const Student& s)
 {
     return binsearch(s,0,students.size()-1);
+}
+
+void Database::remove(const Student& s)
+{
+    int pos = binsearchpos(s,0,students.size()-1);
+    students.remove(pos);
 }

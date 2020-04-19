@@ -22,6 +22,16 @@ struct course
             << std::setw(5) << std::left << other.grade;
         return out;
     }
+    bool operator==(const course& other)
+    {
+        if (name == other.name) return true;
+        return false;
+    }
+    bool operator!=(const course& other)
+    {
+        if (name == other.name) return false;
+        return true;
+    }
     friend std::istream& operator>>(std::istream& in, course& other)
     {
         in >> other.name >> other.credits >> other.grade;
@@ -52,7 +62,11 @@ public:
 
     void insertCourse(const std::string&, int, char);
     void insertCourse(const course&);
+    void removeCourse(const course&);
+    void removeCourse(const std::string&);
+    void removeCourse(int posn);
     double getGPA() const;
+    inline int numCourses() { return courses.size(); }
     std::string getFirstName();
     std::string getLastName();
     std::pair<std::string,std::string> getName();
@@ -64,17 +78,12 @@ public:
     course& operator[](int);
     const course& at(int);
 
-
-    // name sort is default
-    bool operator>(const Student&) const;
-    bool operator<(const Student&) const;
-    bool operator>=(const Student&) const;
-    bool operator<=(const Student&) const;
     bool operator==(const Student&) const;
     bool operator!=(const Student&) const;
 
     static int gpaCmp(const Student&, const Student&);
     static int fnCmp(const Student&, const Student&);
+    static int lniCmp(const Student&, const Student&);
     static int idCmp(const Student&, const Student&);
     static int lnCmp(const Student&, const Student&);
 
@@ -83,16 +92,11 @@ public:
         out << std::setw(15) << std::left << other.name.first
             << std::setw(15) << std::left << other.name.second
             << std::setw(10) << std::left << other.ID;
-        if (other.courses.size())
+        for (auto i = 0; i < other.courses.size(); ++i)
         {
-            bool first = true;
-            for (const auto& i : other.courses)
-            {
-                if (!first)
-                    out << std::setw(40);
-                else first = false;
-                out << i;
-            }
+            if (i) out << std::setw(40) << std::right << ' ';
+            out << other.courses[i];
+            if (i < other.courses.size()-1) out << std::endl;
         }
         return out;
     }

@@ -48,6 +48,12 @@ private:
     Node* tail;
     int _size;
 
+    void destroy()
+    {
+        while(_size) remove_front();
+        head = tail = nullptr;
+    }
+
 public:
     LL() : head(nullptr), tail(nullptr), _size(0) {}
 
@@ -63,6 +69,7 @@ public:
 
     LL& operator=(LL&& other)
     {
+        destroy();
         head = other.head;
         tail = other.tail;
         _size = other._size;
@@ -102,51 +109,37 @@ public:
     }
 
     template <typename compare>
-    void ordered_insert_special(const T& _data, compare cmp)
+    void ordered_insert(const T& _data, compare cmp)
     {
-        if (head == nullptr || cmp(_data,head->data) == -1)
+        if (head == nullptr)
         {
             insert_front(_data);
             return;
         }
-        else if (cmp(_data,tail->data) == 1)
+        int res = cmp(_data,head->data);
+        if (res <= 0)
+        {
+            insert_front(_data);
+            return;
+        }
+        res = cmp(_data,tail->data);
+        if (res >= 1)
         {
             insert_back(_data);
             return;
         }
         Node* curr = head;
-        while(curr)
+        while(curr->next)
         {
-            if (cmp(_data, curr->data) == -1) break;
+            int res = cmp(_data, curr->data);
+            if (res == -1) break;
             curr = curr->next;
         }
-        Node* temp = new Node(_data);
-        temp->next = curr;
-        temp->prev = curr->prev;
-        curr->prev->next = temp;
-        curr->prev = temp;
-        ++_size;
-    }
-
-    void ordered_insert(const T& _data)
-    {
-        // reduce traversals
-        if (head == nullptr || _data < head->data)
+        static int num = 0;
+        if (++num == 14)
         {
-            insert_front(_data);
-            return;
-        }
-        else if (_data > tail->data)
-        {
-            insert_back(_data);
-            return;
-        }
-        Node* curr = head;
-        while (curr)
-        {
-            if (_data == curr->data) throw AlreadyPresent();
-            if (_data < curr->data) break;
-            curr = curr->next;
+            int noop = 1;
+            noop++;
         }
         Node* temp = new Node(_data);
         temp->next = curr;
@@ -187,6 +180,7 @@ public:
 
     LL& operator=(const LL& other)
     {
+        destroy();
         _size = other._size;
         Node* curr = other.head;
         while (curr)
@@ -199,8 +193,7 @@ public:
 
     ~LL()
     {
-        while(_size) remove_front();
-        head = tail = nullptr;
+        destroy();
     }
 
     inline int size() const { return _size; }
@@ -208,34 +201,145 @@ public:
     T& operator[](int idx)
     {
         if (idx < 0 || _size == 0 || idx >= _size) throw OutOfBounds();
-        Node* curr = head;
-        while (idx--)
-            curr = curr->next;
+        // linked lists are not sequential memory, so it can get somewhat tedious
+        // to loop all the way from beginning to end. examine the index's position 
+        // in relation to the point and traverse from there
+        Node* curr;
+        int mid = _size/2;
+        if (idx > mid)
+        {
+            idx++;
+            curr = tail;
+            int numtimes = _size - idx;
+            while (numtimes--)
+            {
+                curr = curr->prev;            
+            }
+        }
+        else
+        {
+            curr = head;
+            while (idx--)
+                curr = curr->next;
+        }
         return curr->data;
+    }
+
+    int find_last_instance(T& val)
+    {
+        Node* curr = tail;
+        int idx = _size - 1;
+        while(curr)
+        {
+            if (curr->data == val) return idx;
+            curr = curr->prev;
+            --idx;
+        }
+        return -1;
+    }
+
+    template <typename compare>
+    int find_last_instance(T& val, compare cmp)
+    {
+        Node* curr = tail;
+        int idx = _size - 1;
+        while(curr)
+        {
+            if (cmp(val, curr->data) == 0) return idx;
+            curr = curr->prev;
+            --idx;
+        }
+        return -1;
+    }
+
+    template <typename compare>
+    int find_first_instance(T& val, compare cmp)
+    {
+        Node* curr = head;
+        int idx = 0;
+        while (curr)
+        {
+            if (cmp(val, curr->data) == 0) return idx;
+            curr = curr->next;
+            ++idx;
+        }
+        return -1;
+    }
+
+    int find_first_instance(T& val)
+    {
+        Node* curr = head;
+        int idx = 0;
+        while(curr)
+        {
+            if (curr->data == val) return idx;
+            curr = curr->next;
+            ++idx;
+        }
+        return -1;
     }
 
     const T& at(int idx)
     {
         if (idx < 0 || _size == 0 || idx >= _size) throw OutOfBounds();
-        Node* curr = head;
-        while (idx--)
-            curr = curr->next;
+        // linked lists are not sequential memory, so it can get somewhat tedious
+        // to loop all the way from beginning to end. examine the index's position 
+        // in relation to the point and traverse from there
+        Node* curr;
+        int mid = _size/2;
+        if (idx > mid)
+        {
+            idx++;
+            curr = tail;
+            int numtimes = _size - idx;
+            while (numtimes--)
+            {
+                curr = curr->prev;            
+            }
+        }
+        else
+        {
+            curr = head;
+            while (idx--)
+                curr = curr->next;
+        }
         return curr->data;
     }
 
     friend std::ostream& operator<<(std::ostream& out, const LL& other)
     {
         Node* curr = other.head;
-        int i = 0;
         while (curr)
         {
-            out << i++ <<". " << curr->data << std::endl;
+            out << curr->data << std::endl;
             curr = curr->next;
         }
         return out;
     }
 
-    class iterator
+    void remove(int pos)
+    {
+        if (pos < 0 || pos >= _size) throw OutOfBounds();
+        if (pos == 0)
+        {
+            remove_front();
+            return;
+        }
+        if (pos == _size - 1)
+        {
+            remove_back();
+            return;
+        }
+        Node* curr = head;
+        while(pos--) curr = curr->next;
+        Node* currPrev = curr->prev;
+        Node* currNext = curr->next;
+        currPrev->next = currNext;
+        currNext->prev = currPrev;
+        delete curr;
+    }
+
+    /*class iterator
     {
     friend class LL;
     private:
@@ -331,7 +435,7 @@ public:
     }
 
     const reverse_iterator rbegin() { return reverse_iterator(tail);}
-    const reverse_iterator rend() { return reverse_iterator(nullptr); }
+    const reverse_iterator rend() { return reverse_iterator(nullptr); }*/
 };
 
 #endif // LL_H

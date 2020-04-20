@@ -29,6 +29,13 @@ void Student::insertCourse(const course& _course)
     courses.push_back(_course);
 }
 
+void Student::insertCourse(const Student &s)
+{
+    for (const auto& i : s.courses)
+        if (std::find(courses.begin(),courses.end(),i) == std::end(courses))
+            courses.push_back(i);
+}
+
 void Student::removeCourse(int posn)
 {
     if (posn < 0 || posn >= courses.size()) throw CourseNotFound();
@@ -156,6 +163,15 @@ int Student::lniCmp(const Student &l, const Student &r)
     std::string _l = l.name.second + l.name.first + std::to_string(l.ID),
                 _r = r.name.second + r.name.first + std::to_string(l.ID);
     if (_l == _r) throw StudentPresent();
+    if (_l > _r) return 1;
+    return -1;
+}
+
+int Student::lniCheckCmp(const Student &l, const Student &r)
+{
+    std::string _l = l.name.second + l.name.first + std::to_string(l.ID),
+                _r = r.name.second + r.name.first + std::to_string(l.ID);
+    if (_l == _r) return 0;
     if (_l > _r) return 1;
     return -1;
 }

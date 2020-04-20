@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 //#include "Functions.h"
 
 struct course
@@ -61,6 +62,7 @@ public:
         : name(_name), ID(_ID) {}
 
     void insertCourse(const std::string&, int, char);
+    void insertCourse(const Student& s);
     void insertCourse(const course&);
     void removeCourse(const course&);
     void removeCourse(const std::string&);
@@ -80,10 +82,12 @@ public:
 
     bool operator==(const Student&) const;
     bool operator!=(const Student&) const;
+    void clearCourseList() { courses.clear(); }
 
     static int gpaCmp(const Student&, const Student&);
     static int fnCmp(const Student&, const Student&);
     static int lniCmp(const Student&, const Student&);
+    static int lniCheckCmp(const Student&, const Student&);
     static int idCmp(const Student&, const Student&);
     static int lnCmp(const Student&, const Student&);
 

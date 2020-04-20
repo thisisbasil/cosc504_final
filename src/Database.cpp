@@ -14,6 +14,25 @@ public:
     const char * what() const noexcept { return msg.c_str(); }
 };
 
+void Database::insertFromFile(const Student &s)
+{
+    try
+    {
+        students.ordered_insert(s,Student::lniCmp);
+    }
+    catch (const std::exception& e)
+    {
+        try
+        {
+            binsearch(s,0,students.size()-1,Student::lniCheckCmp).insertCourse(s);
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
+    }
+}
+
 void Database::readFromFile(const std::string& fname)
 {
     std::ifstream file(fname.c_str());
@@ -30,7 +49,7 @@ void Database::readFromFile(std::istream& file)
         course c;
         std::stringstream in;
         in << buffer;
-        if (buffer.substr(0,5) == "First" || buffer.at(0) == '#') continue;
+        if (!buffer.size() ||buffer.substr(0,5) == "First" || buffer.at(0) == '#') continue;
 
         int numfields=0;
         while (!in.eof()) {
@@ -44,9 +63,16 @@ void Database::readFromFile(std::istream& file)
             in1 >> s >> c;
             prev = s;
         }
-        else in >> c;
+        else
+        {
+            s = prev;
+            std::stringstream in1(buffer);
+            in1 >> c;
+        }
         s.insertCourse(c);
-        insert(s);
+        insertFromFile(s);
+        prev = s;
+        prev.clearCourseList();
     }
 }
 
@@ -151,6 +177,13 @@ void Database::honorStudents()
     std::cout << "Total number of honors students: " << count << std::endl;
 }
 
+bool Database::areMultipleStudents(const Student &s)
+{
+    if (students.find_last_instance(s,Student::lnCmp) ==
+        students.find_first_instance(s,Student::lnCmp)) return false;
+    return true;
+}
+
 void Database::warningStudents()
 {
     std::cout << "Warning students: " << std::endl;
@@ -183,33 +216,47 @@ void Database::failingStudents()
     std::cout << "Total number of failing students: " << count << std::endl;
 }
 
-Student& Database::binsearch(const Student& s, int l, int r)
+template <typename compare>
+Student& Database::binsearch(const Student& s, int l, int r, compare cmp)
 {
     if (l > r) throw NotPresent();
     int mid = (l+r)/2;
     Student& temp = students[mid];
-    if (Student::lniCmp(s,temp) == 0) return temp;
-    if (Student::lniCmp(s,temp) == 1) return binsearch(s,mid+1,r);
-    else return binsearch(s,l,mid-1);
+    int res = cmp(s,temp);
+    if (res == 0) return temp;
+    if (res == 1) return binsearch(s,mid+1,r,cmp);
+    else return binsearch(s,l,mid-1,cmp);
 }
 
-int Database::binsearchpos(const Student &s, int l, int r)
+template <typename compare>
+int Database::binsearchpos(const Student &s, int l, int r, compare cmp)
 {
     if (l > r) throw NotPresent();
     int mid = (l+r)/2;
     Student& temp = students[mid];
-    if (Student::lniCmp(s,temp) == 0) return mid;
-    if (Student::lniCmp(s,temp) == 1) return binsearchpos(s,mid+1,r);
-    else return binsearchpos(s,l,mid-1);
+    if (cmp(s,temp) == 0) return mid;
+    if (cmp(s,temp) == 1) return binsearchpos(s,mid+1,r,cmp);
+    else return binsearchpos(s,l,mid-1,cmp);
 }
 
 Student& Database::findStudent(const Student& s)
 {
-    return binsearch(s,0,students.size()-1);
+    return binsearch(s,0,students.size()-1,Student::lniCheckCmp);
+}
+
+Student& Database::findStudent(int _id)
+{
+    LL<Student> byid;
+    for (int i = 0; i < students.size(); ++i)
+    {
+        byid.ordered_insert(students.at(i), Student::idCmp);
+    }
+    Student temp ("","",_id);
+    return binsearch(Student("","",_id),0,byid.size()-1,Student::idCmp);
 }
 
 void Database::remove(const Student& s)
 {
-    int pos = binsearchpos(s,0,students.size()-1);
+    int pos = binsearchpos(s,0,students.size()-1,Student::lniCmp);
     students.remove(pos);
 }

@@ -83,13 +83,21 @@ void AddStudent(Database& d, bool fromFile)
 
 void AddCourse(Database& d)
 {
-    Student temp = inputStudent();
+    Student temp = inputStudent(NAME);
+    if (d.areMultipleStudents(temp))
+    {
+        int id;
+        std::cout << "Multiple students with that name! Please enter ID also: ";
+        std::cin >> id;
+        temp = std::move(Student(temp.getFirstName(),temp.getLastName(),id));
+    }
     AddCourse(d,temp);
 }
 
 void AddCourse(Database& d, const Student& s)
 {
     course c = inputCourse();
+
 }
 
 void ModifyGrade(Database& d)
@@ -161,7 +169,17 @@ void Sort(Database& d)
 
 void FindStudent(Database& d)
 {
-
+    std::cout << "Enter student id: ";
+    int id;
+    std::cin >> id;
+    try
+    {
+        std::cout << d.findStudent(id) << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void PrintHonors(Database& d)

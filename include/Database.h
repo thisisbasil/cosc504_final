@@ -27,8 +27,13 @@ class Database
 private:
     LL<Student> students;
 
-    Student& binsearch(const Student&, int, int);
-    int binsearchpos(const Student&, int, int);
+    template <typename compare>
+    Student& binsearch(const Student&, int, int, compare);
+
+    template <typename compare>
+    int binsearchpos(const Student&, int, int, compare);
+
+    void insertFromFile(const Student& s);
 
 public:
 
@@ -50,11 +55,12 @@ public:
     void removeCourse(const Student&, const course&);
     void removeCourse(int,const course&);
     Student& findStudent(const Student&);
+    Student& findStudent(int);
 
     void sortByName();
     void sortByGPA();
     void sortByID();
-
+    bool areMultipleStudents(const Student& s);
     void warningStudents();
     void failingStudents();
     void honorStudents();

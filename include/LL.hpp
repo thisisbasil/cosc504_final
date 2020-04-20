@@ -36,6 +36,7 @@ template <typename T>
 class LL
 {
 private:
+    // inner struct, hide inner workings
     struct Node
     {
         T data;
@@ -44,10 +45,13 @@ private:
         Node(T _data) : data(_data), prev(nullptr), next(nullptr) {}
     };
 
+    // doubly linked list
     Node* head;
     Node* tail;
     int _size;
 
+    // destroy the list, used in assignment operators to clear the list
+    // before copying over, and in destructor
     void destroy()
     {
         while(_size) remove_front();
@@ -57,6 +61,7 @@ private:
 public:
     LL() : head(nullptr), tail(nullptr), _size(0) {}
 
+    // move constructor
     LL(LL&& other)
     {
         head = other.head;
@@ -67,6 +72,7 @@ public:
         other._size = 0;
     }
 
+    // move assignment operator
     LL& operator=(LL&& other)
     {
         destroy();
@@ -79,6 +85,7 @@ public:
         return *this;
     }
 
+    // insert an element at the front of the list
     void insert_front(const T& _data)
     {
         Node* temp = new Node(_data);
@@ -94,6 +101,7 @@ public:
         ++_size;
     }
 
+    // insert an element at the back of the list
     void insert_back(const T& _data)
     {
         Node* temp = new Node(_data);
@@ -108,6 +116,7 @@ public:
         ++_size;
     }
 
+    // insertion sort using comparator function
     template <typename compare>
     void ordered_insert(const T& _data, compare cmp)
     {
@@ -149,24 +158,67 @@ public:
         ++_size;
     }
 
+    // insertion sort using default boolean ops
+    void ordered_insert(const T& _data)
+    {
+        if (head == nullptr)
+        {
+            insert_front(_data);
+            return;
+        }
+        if (_data <= head->data)
+        {
+            insert_front(_data);
+            return;
+        }
+        if (_data >= tail->data)
+        {
+            insert_back(_data);
+            return;
+        }
+        Node* curr = head;
+        while(curr->next)
+        {
+            if (_data == curr->data) break;
+            curr = curr->next;
+        }
+        static int num = 0;
+        if (++num == 14)
+        {
+            int noop = 1;
+            noop++;
+        }
+        Node* temp = new Node(_data);
+        temp->next = curr;
+        temp->prev = curr->prev;
+        curr->prev->next = temp;
+        curr->prev = temp;
+        ++_size;
+    }
+
+    // remove the head element
     void remove_front()
     {
         if (head == nullptr) throw EmptyList();
         Node* temp = head;
         head = head->next;
         --_size;
+        if (_size <= 1) tail = head;
         delete temp;
     }
 
+    // remove the tail element
     void remove_back()
     {
         if (tail == nullptr) throw EmptyList();
         Node* temp = tail;
         tail = temp->prev;
         --_size;
+        if (_size <= 1) head = tail;
         delete temp;
     }
 
+    // copy constructor
     LL(const LL& other)
     {
         _size = other._size;
@@ -178,6 +230,7 @@ public:
         }
     }
 
+    // copy assignment operator
     LL& operator=(const LL& other)
     {
         destroy();
@@ -198,6 +251,8 @@ public:
 
     inline int size() const { return _size; }
 
+    // access to individual elements via reference so they may be accessed from
+    // outside
     T& operator[](int idx)
     {
         if (idx < 0 || _size == 0 || idx >= _size) throw OutOfBounds();
@@ -225,7 +280,8 @@ public:
         return curr->data;
     }
 
-    int find_last_instance(T& val)
+    // find the last instance of an element using default boolean ops
+    int find_last_instance(const T& val)
     {
         Node* curr = tail;
         int idx = _size - 1;
@@ -238,8 +294,9 @@ public:
         return -1;
     }
 
+    // find the last instance of an element using a comparator
     template <typename compare>
-    int find_last_instance(T& val, compare cmp)
+    int find_last_instance(const T& val, compare cmp)
     {
         Node* curr = tail;
         int idx = _size - 1;
@@ -252,8 +309,9 @@ public:
         return -1;
     }
 
+    // find the first instance of an element using a comparator
     template <typename compare>
-    int find_first_instance(T& val, compare cmp)
+    int find_first_instance(const T& val, compare cmp)
     {
         Node* curr = head;
         int idx = 0;
@@ -266,7 +324,8 @@ public:
         return -1;
     }
 
-    int find_first_instance(T& val)
+    // find the first instance of an element using default boolean ops
+    int find_first_instance(const T& val)
     {
         Node* curr = head;
         int idx = 0;
@@ -279,6 +338,7 @@ public:
         return -1;
     }
 
+    // similar to brace operators, but make const
     const T& at(int idx)
     {
         if (idx < 0 || _size == 0 || idx >= _size) throw OutOfBounds();
@@ -306,6 +366,7 @@ public:
         return curr->data;
     }
 
+    // print the linked list
     friend std::ostream& operator<<(std::ostream& out, const LL& other)
     {
         Node* curr = other.head;
@@ -317,6 +378,7 @@ public:
         return out;
     }
 
+    // remove an individual element
     void remove(int pos)
     {
         if (pos < 0 || pos >= _size) throw OutOfBounds();

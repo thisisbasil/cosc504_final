@@ -33,6 +33,9 @@ private:
     template <typename compare>
     int binsearchpos(const Student&, int, int, compare);
 
+    template <typename compare>
+    Student& binsearch(const Student&, LL<Student>&, int, int, compare);
+
     void insertFromFile(const Student& s);
 
 public:
@@ -42,8 +45,8 @@ public:
     void writeToFile(const std::string& fname = "SeniorClass");
     void writeToFile(std::ostream&);
     
-    void insert(const std::string&,const std::string&,int);
-    void insert(const Student&);
+    bool insert(const std::string&,const std::string&,int);
+    bool insert(const Student&);
     void remove(const std::string&,const std::string&);
     void remove(int);
     void remove(const Student&);
@@ -55,7 +58,7 @@ public:
     void removeCourse(const Student&, const course&);
     void removeCourse(int,const course&);
     Student& findStudent(const Student&);
-    Student& findStudent(int);
+    Student findStudent(int);
 
     void sortByName();
     void sortByGPA();

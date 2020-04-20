@@ -28,7 +28,7 @@ int main(int argc, char** argv)
              << " 4. Remove course for student" << endl
              << " 5. Find GPA for student" << endl        // X
              << " 6. Sort" << endl                        // X
-             << " 7. Search for student" << endl
+             << " 7. Search for student" << endl          // X
              << " 8. Modify grade for student" << endl
              << " 9. Print honors students" << endl       // X
              << "10. Print warnings" << endl              // X

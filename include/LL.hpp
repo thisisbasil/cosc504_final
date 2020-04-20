@@ -339,7 +339,7 @@ public:
     }
 
     // similar to brace operators, but make const
-    const T& at(int idx)
+    const T& at(int idx) const
     {
         if (idx < 0 || _size == 0 || idx >= _size) throw OutOfBounds();
         // linked lists are not sequential memory, so it can get somewhat tedious

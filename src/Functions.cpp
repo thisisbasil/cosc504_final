@@ -33,7 +33,7 @@ Student inputStudent(StudentInputType type = ALL)
         std::cout << "Student Last Name: ";
         std::cin >> lname;
     }
-    if (type == ALL || type == NAME)
+    if (type == ALL || type == ID)
     {
         std::cout << "Student id: ";
         std::cin >> id;
@@ -52,7 +52,7 @@ course inputCourse()
     std::cin >> credits;
     std::cout << "Letter grade: ";
     std::cin >> grade;
-    return course(std::move(trim(name)), credits, grade);
+    return course(std::move(trim(name)), credits, std::toupper(grade));
 }
 
 void AddStudent(Database& d, bool fromFile)
@@ -66,18 +66,14 @@ void AddStudent(Database& d, bool fromFile)
         tempS.insertCourse(inputCourse());
         --num;
     }
-    if (!fromFile)
-        d.insert(tempS);
-    else
+    try
     {
-        try 
-        {
-           
-        } 
-        catch (const std::exception& e) 
-        {
-            std::cout << e.what() << std::endl;
-        }
+        bool res = d.insert(tempS);
+        if (res) std::cout << d << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
     }
 }
 
@@ -174,7 +170,8 @@ void FindStudent(Database& d)
     std::cin >> id;
     try
     {
-        std::cout << d.findStudent(id) << std::endl;
+        Student temp = d.findStudent(id);
+        std::cout << temp << std::endl;
     }
     catch (const std::exception& e)
     {

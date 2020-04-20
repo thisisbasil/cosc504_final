@@ -87,21 +87,23 @@ void Database::writeToFile(std::ostream& file)
     file << *this << endl;
 }
 
-void Database::insert(const std::string &fname, const std::string &lname, int ID)
+bool Database::insert(const std::string &fname, const std::string &lname, int ID)
 {
     Student s (fname,lname,ID);
-    insert(s);
+    return insert(s);
 }
 
-void Database::insert(const Student& student)
+bool Database::insert(const Student& student)
 {
     try
     {
         students.ordered_insert(student,Student::lniCmp);
+        return true;
     }
     catch (const std::exception& e)
     {
         std::cout << e.what() << std::endl;
+        return false;
     }
 }
 
@@ -229,6 +231,18 @@ Student& Database::binsearch(const Student& s, int l, int r, compare cmp)
 }
 
 template <typename compare>
+Student& Database::binsearch(const Student& s, LL<Student>& ll, int l, int r, compare cmp)
+{
+    if (l > r) throw NotPresent();
+    int mid = (l+r)/2;
+    Student& temp = ll[mid];
+    int res = cmp(s,temp);
+    if (res == 0) return temp;
+    if (res == 1) return binsearch(s,ll,mid+1,r,cmp);
+    else return binsearch(s,ll,l,mid-1,cmp);
+}
+
+template <typename compare>
 int Database::binsearchpos(const Student &s, int l, int r, compare cmp)
 {
     if (l > r) throw NotPresent();
@@ -244,15 +258,15 @@ Student& Database::findStudent(const Student& s)
     return binsearch(s,0,students.size()-1,Student::lniCheckCmp);
 }
 
-Student& Database::findStudent(int _id)
+Student Database::findStudent(int _id)
 {
     LL<Student> byid;
     for (int i = 0; i < students.size(); ++i)
     {
         byid.ordered_insert(students.at(i), Student::idCmp);
     }
-    Student temp ("","",_id);
-    return binsearch(Student("","",_id),0,byid.size()-1,Student::idCmp);
+    Student temp = binsearch(Student("","",_id),byid,0,byid.size()-1,Student::idCmp);
+    return temp;
 }
 
 void Database::remove(const Student& s)

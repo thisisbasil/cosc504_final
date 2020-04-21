@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     {
         std::string option;
         cout << "Options: " << endl
-             << " 1. Add new student" << endl
+             << " 1. Add new student" << endl             // X
              << " 2. Add course for student" << endl
              << " 3. Remove student" << endl
              << " 4. Remove course for student" << endl

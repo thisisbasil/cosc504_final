@@ -19,6 +19,15 @@ public:
     const char * what() const noexcept { return msg.c_str(); }
 };
 
+class ClassPresent : public std::exception
+{
+private:
+    std::string msg;
+public:
+    ClassPresent() : msg("Student already registered in this clas!") {}
+    const char * what() const noexcept { return msg.c_str(); }
+};
+
 void Student::insertCourse(const std::string& name, int credits, char grade)
 {
     insertCourse(course(name, credits, std::toupper(grade)));
@@ -26,7 +35,9 @@ void Student::insertCourse(const std::string& name, int credits, char grade)
 
 void Student::insertCourse(const course& _course)
 {
-    courses.push_back(_course);
+    if (std::find(courses.begin(),courses.end(),_course) == std::end(courses))
+        courses.push_back(_course);
+    else throw ClassPresent();
 }
 
 void Student::insertCourse(const Student &s)

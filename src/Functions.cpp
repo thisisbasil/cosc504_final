@@ -58,23 +58,22 @@ course inputCourse()
 void AddStudent(Database& d, bool fromFile)
 {
     Student tempS = inputStudent();
-    int num;
-    std::cout << "number of courses enrolled in: ";
-    std::cin >> num;
+    int num = 0;
+    while (true)
+    {
+        std::cout << "number of courses enrolled in: ";
+        std::cin >> num;
+        if (num > 0) break;
+        std::cout << "Invalid entry! ";
+    }
     while (num > 0)
     {
         tempS.insertCourse(inputCourse());
         --num;
     }
-    try
-    {
-        bool res = d.insert(tempS);
-        if (res) std::cout << d << std::endl;
-    }
-    catch (const std::exception& e)
-    {
-        std::cout << e.what() << std::endl;
-    }
+
+    bool res = d.insert(tempS);
+    if (res) std::cout << d << std::endl;
 }
 
 void AddCourse(Database& d)

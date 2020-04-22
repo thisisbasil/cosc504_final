@@ -39,7 +39,7 @@ private:
     void insertFromFile(const Student& s);
 
 public:
-
+    void clearList() { students.clear(); }
     void readFromFile(const std::string&);
     void readFromFile(std::istream&);
     void writeToFile(const std::string& fname = "SeniorClass");
@@ -58,8 +58,8 @@ public:
     void removeCourse(const Student&, const course&);
     void removeCourse(int,const course&);
     Student& findStudent(const Student&);
-    Student findStudent(int);
-
+    Student& findStudent(int);
+    inline int numStudents() { return students.size(); }
     void sortByName();
     void sortByGPA();
     void sortByID();

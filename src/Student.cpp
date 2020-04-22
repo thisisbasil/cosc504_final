@@ -1,32 +1,37 @@
-#include "include/Student.h"
+﻿#include "include/Student.h"
 #include <exception>
 
-class CourseNotFound : public std::exception
+Student& Student::operator=(const Student& other)
 {
-private:
-    std::string msg;
-public:
-    CourseNotFound() : msg("Course not found!") {};
-    const char * what() const noexcept { return msg.c_str(); }
-};
+    name = other.name;
+    ID = other.ID;
+    courses = other.courses;
+    return *this;
+}
 
-class StudentPresent : public std::exception
+Student::Student(const Student& other)
 {
-private:
-    std::string msg;
-public:
-    StudentPresent() : msg("Student already present!") {}
-    const char * what() const noexcept { return msg.c_str(); }
-};
+    name = other.name;
+    ID = other.ID;
+    courses = other.courses;
+}
 
-class ClassPresent : public std::exception
+Student::Student(Student&& other)
 {
-private:
-    std::string msg;
-public:
-    ClassPresent() : msg("Student already registered in this clas!") {}
-    const char * what() const noexcept { return msg.c_str(); }
-};
+    name = std::move(other.name);
+    ID = other.ID;
+    other.ID = -1;
+    courses = std::move(other.courses);
+}
+
+Student& Student::operator=(Student&& other)
+{
+    name = std::move(other.name);
+    ID = other.ID;
+    other.ID = -1;
+    courses = std::move(other.courses);
+    return *this;
+}
 
 void Student::insertCourse(const std::string& name, int credits, char grade)
 {
@@ -35,71 +40,30 @@ void Student::insertCourse(const std::string& name, int credits, char grade)
 
 void Student::insertCourse(const course& _course)
 {
-    if (std::find(courses.begin(),courses.end(),_course) == std::end(courses))
-        courses.push_back(_course);
-    else throw ClassPresent();
+    try
+    {
+        courses.ordered_insert(_course,course::courseCmpI);
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void Student::insertCourse(const Student &s)
 {
-    for (const auto& i : s.courses)
-        if (std::find(courses.begin(),courses.end(),i) == std::end(courses))
-            courses.push_back(i);
-}
-
-void Student::removeCourse(int posn)
-{
-    if (posn < 0 || posn >= courses.size()) throw CourseNotFound();
-    courses.erase(courses.begin()+posn);
-}
-
-void Student::removeCourse(const course& c)
-{
-    auto i = courses.begin();
-    for(; i <= courses.end(); ++i)
+    for (int i = 0; i < courses.size(); ++i)
     {
-        if (*i == c)
+        try
         {
-            courses.erase(i);
-            return;
+            courses.ordered_insert(s.courses.at(i),course::courseCmpI);
+        }
+        catch (const OutOfBounds& e) { /* stack unwinding can cause this to happen, treat as no-op */ }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
         }
     }
-    throw CourseNotFound();
-}
-
-void Student::removeCourse(const std::string& s)
-{
-    auto i = courses.begin();
-    for(; i <= courses.end(); ++i)
-    {
-        if (i->name == s)
-        {
-            courses.erase(i);
-            return;
-        }
-    }
-    throw CourseNotFound();
-}
-
-
-std::vector<course>::iterator Student::begin()
-{
-    return courses.begin();
-}
-
-std::vector<course>::iterator Student::end()
-{
-    return courses.end();
-}
-
-std::vector<course>::reverse_iterator Student::rbegin()
-{
-    return courses.rbegin();
-}
-
-std::vector<course>::reverse_iterator Student::rend()
-{
-    return courses.rend();
 }
 
 course& Student::operator[](int idx)
@@ -200,19 +164,77 @@ double Student::getGPA() const
 {
     double retval = 0.0;
     int hours = 0;
-    for (const auto& i : courses)
+    //for (const auto& i : courses)
+    for (int i = 0; i < courses.size(); ++i)
     {
         double curr = 0;
-        hours += i.credits;
-        switch (i.grade)
+        hours += courses.at(i).credits;
+        switch (courses.at(i).grade)
         {
-        case 'A': curr = 4.0 * i.credits; break;
-        case 'B': curr = 3.0 * i.credits; break;
-        case 'C': curr = 2.0 * i.credits; break;
-        case 'D': curr = 1.0 * i.credits; break;
+        case 'A': curr = 4.0 * courses.at(i).credits; break;
+        case 'B': curr = 3.0 * courses.at(i).credits; break;
+        case 'C': curr = 2.0 * courses.at(i).credits; break;
+        case 'D': curr = 1.0 * courses.at(i).credits; break;
         default: break;
         };
         retval += curr;
     }
     return retval/hours;
+}
+
+void Student::removeCourse()
+{
+    for (int i = 0; i < courses.size(); ++i)
+    {
+        std::cout << i+1 << ". " << courses.at(i) << std::endl;
+    }
+    int posn;
+    while (true)
+    {
+        std::cout << "Selections: ";
+        std::cin >> posn;
+        if (posn < 1 || posn > courses.size())
+        {
+            std::cout << "Invalid selection! ";
+        }
+        else
+        {
+            posn--;
+            break;
+        }
+    }
+    courses.remove(posn);
+}
+
+void Student::modifyCourse()
+{
+    for (int i = 0; i < courses.size(); ++i)
+    {
+        std::cout << i+1 << ". " << courses.at(i) << std::endl;
+    }
+    int posn;
+    while (true)
+    {
+        std::cout << "Selections: ";
+        std::cin >> posn;
+        if (posn < 1 || posn > courses.size())
+        {
+            std::cout << "Invalid selection! ";
+        }
+        else
+        {
+            posn--;
+            break;
+        }
+    }
+    char grade = '\0';
+    while (true)
+    {
+        std::cout << "Enter new grade: ";
+        std::cin >> grade;
+        grade = toupper(grade);
+        if (grade == 'A' || grade == 'B' || grade == 'C' || grade == 'D' || grade == 'F') break;
+        std::cout << "Invalid grade! ";
+    }
+    courses[posn].grade = grade;
 }

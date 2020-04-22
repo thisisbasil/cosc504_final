@@ -48,10 +48,22 @@ course inputCourse()
     char grade;
     std::cout << "Enter course name: ";
     std::cin >> name;
-    std::cout << "Number of credit hours: ";
-    std::cin >> credits;
-    std::cout << "Letter grade: ";
-    std::cin >> grade;
+    std::for_each(name.begin(),name.end(),[](char& c){ c = std::toupper(c); });
+    while (true)
+    {
+        std::cout << "Number of credit hours: ";
+        std::cin >> credits;
+        if (credits >= 0) break;
+        std::cout << "Hours must be >0! ";
+    }
+    while (true)
+    {
+        std::cout << "Letter grade: ";
+        std::cin >> grade;
+        grade = std::toupper(grade);
+        if (grade == 'A' || grade == 'B' || grade == 'C' || grade == 'D' || grade == 'F') break;
+        std::cout << "Invalid grade, must be A,B,C,D,F. ";
+    }
     return course(std::move(trim(name)), credits, std::toupper(grade));
 }
 
@@ -78,7 +90,7 @@ void AddStudent(Database& d, bool fromFile)
 
 void AddCourse(Database& d)
 {
-    Student temp = inputStudent(NAME);
+    /*Student temp = inputStudent(NAME);
     if (d.areMultipleStudents(temp))
     {
         int id;
@@ -86,46 +98,107 @@ void AddCourse(Database& d)
         std::cin >> id;
         temp = std::move(Student(temp.getFirstName(),temp.getLastName(),id));
     }
-    AddCourse(d,temp);
+    AddCourse(d,temp);*/
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
+    int type, pos;
+    Student s;
+    while(true)
+    {
+        std::cout << "Find student by (1) name or by (2) id? ";
+        std::cin >> type;
+        if (type == NAME || type == ID) break;
+        std::cout << "Invalid input!\n";
+    }
+    if (type == NAME)
+    {
+        s = inputStudent(NAME);
+        if (d.areMultipleStudents(s))
+        {
+            std::cout << "Multiple students with that name! ";
+            type = ID;
+        }
+        else
+        {
+            course c = inputCourse();
+            d.findStudent(s).insertCourse(c);
+        }
+    }
+    if (type == ID)
+    {
+        int id;
+        std::cout << "Enter ID: ";
+        std::cin >> id;
+        course c = inputCourse();
+        d.findStudent(id).insertCourse(c);
+    }
 }
 
 void AddCourse(Database& d, const Student& s)
 {
+
     course c = inputCourse();
-
-}
-
-void ModifyGrade(Database& d)
-{
-    try 
-    {
-        auto s = d.findStudent(inputStudent());
-        
-        for (const auto& i : s)
-        {
-            
-        }
-    } 
-    catch (const std::exception& e) 
-    {
-        std::cout << e.what() << std::endl;
-    }
 }
 
 void RemoveStudent(Database& d)
 {
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
     bool loop = true;
     int type;
     while (loop)
     {
         std::cout << "Delete by (1) name or by (2) id? ";
         std::cin >> type;
-        if (type != NAME || type != ID)
+        if (type != NAME && type != ID)
             std::cout << "Invalid input!\n";
         else
             loop = false;
     }
-    Student s = inputStudent(StudentInputType(type));
+
+    if (type == NAME)
+    {
+        Student s = inputStudent(NAME);
+        if (d.areMultipleStudents(s))
+        {
+            std::cout << "Multiple students with that name! ";
+            type = ID;
+        }
+        else
+        {
+            try
+            {
+               d.remove(s);
+               std::cout << d << std::endl;
+            }
+            catch (const std::exception& e)
+            {
+                std::cout << e.what() << std::endl;
+            }
+        }
+    }
+    if (type == ID)
+    {
+        int id;
+        std::cout << "Enter ID: ";
+        std::cin >> id;
+        try
+        {
+            d.remove(id);
+            std::cout << d << std::endl << "Number of students "
+                      << d.numStudents() << std::endl;
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
+    }
 }
 
 void FindGPA(Database& d)
@@ -137,7 +210,7 @@ void FindGPA(Database& d)
     }
     catch (const std::exception& e)
     {
-        std::cout << e.what() << std::endl;
+        std::cout << "FindGPPA(Database&): " << e.what() << std::endl;
     }
 }
 
@@ -170,11 +243,11 @@ void FindStudent(Database& d)
     try
     {
         Student temp = d.findStudent(id);
-        std::cout << temp << std::endl;
+        std::cout << temp << std::endl << "GPA: " << temp.getGPA() << std::endl;
     }
     catch (const std::exception& e)
     {
-        std::cout << e.what() << std::endl;
+        std::cout << "FindStudent(Database&): " << e.what() << std::endl;
     }
 }
 
@@ -194,7 +267,101 @@ void PrintFail(Database& d)
 }
 
 void RemoveCourse(Database& d)
-{}
+{
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
+    bool loop = true;
+    int type;
+    Student s;
+    while (loop)
+    {
+        std::cout << "Find student by (1) name or by (2) id? ";
+        std::cin >> type;
+        if (type != NAME && type != ID)
+            std::cout << "Invalid input!\n";
+        else
+            loop = false;
+    }
+    int pos;
+    if (type == NAME)
+    {
+        s = inputStudent(NAME);
+        if (d.areMultipleStudents(s))
+        {
+            std::cout << "Multiple students with that name! ";
+            type = ID;
+        }
+        else
+        {
+            d.findStudent(s).removeCourse();
+            if (d.findStudent(s).numCourses() == 0)
+            {
+                std::cout << "Student is no longer enrolled in courses," <<
+                             " removing from the database" << std::endl;
+                d.remove(s);
+            }
+        }
+    }
+    if (type == ID)
+    {
+        int id;
+        std::cout << "Enter ID: ";
+        std::cin >> id;
+        d.findStudent(id).removeCourse();
+        if (d.findStudent(id).numCourses() == 0)
+        {
+            std::cout << "Student is no longer enrolled in courses," <<
+                         " removing from the database" << std::endl;
+            d.remove(id);
+        }
+    }
+}
+
+void ModifyGrade(Database& d)
+{
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
+    bool loop = true;
+    int type;
+    Student s;
+    while (loop)
+    {
+        std::cout << "Find student by (1) name or by (2) id? ";
+        std::cin >> type;
+        if (type != NAME && type != ID)
+            std::cout << "Invalid input!\n";
+        else
+            loop = false;
+    }
+    int pos;
+    if (type == NAME)
+    {
+        s = inputStudent(NAME);
+        if (d.areMultipleStudents(s))
+        {
+            std::cout << "Multiple students with that name! ";
+            type = ID;
+        }
+        else
+        {
+            d.findStudent(s).modifyCourse();
+        }
+    }
+    if (type == ID)
+    {
+        int id;
+        std::cout << "Enter ID: ";
+        std::cin >> id;
+        d.findStudent(id).modifyCourse();
+    }
+}
+
 
 void CreateList(Database& d)
 {

@@ -7,8 +7,38 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-//#include "Functions.h"
+#include "LL.hpp"
 
+
+// various exceptions
+class CourseNotFound : public std::exception
+{
+private:
+    std::string msg;
+public:
+    CourseNotFound() : msg("Course not found!") {};
+    const char * what() const noexcept { return msg.c_str(); }
+};
+
+class StudentPresent : public std::exception
+{
+private:
+    std::string msg;
+public:
+    StudentPresent() : msg("Student already present!") {}
+    const char * what() const noexcept { return msg.c_str(); }
+};
+
+class ClassPresent : public std::exception
+{
+private:
+    std::string msg;
+public:
+    ClassPresent() : msg("Student already registered in this clas!") {}
+    const char * what() const noexcept { return msg.c_str(); }
+};
+
+// struct representing individual courses
 struct course
 {
     std::string name;
@@ -36,47 +66,61 @@ struct course
     friend std::istream& operator>>(std::istream& in, course& other)
     {
         in >> other.name >> other.credits >> other.grade;
+        std::for_each(other.name.begin(),other.name.end(),[](char& c){ c = std::toupper(c); });
         return in;
+    }
+
+    // static comparison methods, for ordered insertio
+    static int courseCmp(const course& l, const course& r)
+    {
+        if (l.name < r.name) return -1;
+        if (l.name == r.name) return 0;
+        return 1;
+    }
+
+    static int courseCmpI(const course& l, const course& r)
+    {
+        if (l.name < r.name) return -1;
+        if (l.name == r.name) throw ClassPresent();
+        return 1;
     }
 };
 
+// class representing students
 class Student
 {
 private:
     std::pair<std::string, std::string> name;
     int ID;
-    std::vector<course> courses;
+    LL<course> courses;
 
 public:
     // can rely on default since i am implementing no dynamic memory
     Student()                          = default;
     ~Student()                         = default;
-    Student(const Student&)            = default;
-    Student(Student&&)                 = default;
-    Student& operator=(const Student&) = default;
-    Student& operator=(Student&&)      = default;
+    Student(const Student&);
+    Student(Student&&);
+    Student& operator=(const Student&);
+    Student& operator=(Student&&);
 
-    Student(std::string fname, std::string lname, int _ID)
+    Student(std::string fname, std::string lname, int _ID = 0)
         : name(fname,lname), ID(_ID) {}
-    Student(std::pair<std::string, std::string> _name, int _ID)
+    Student(std::pair<std::string, std::string> _name, int _ID = 0)
         : name(_name), ID(_ID) {}
 
     void insertCourse(const std::string&, int, char);
     void insertCourse(const Student& s);
     void insertCourse(const course&);
-    void removeCourse(const course&);
-    void removeCourse(const std::string&);
-    void removeCourse(int posn);
+    void removeCourse();
+    void modifyCourse();
     double getGPA() const;
+    inline int getID() const { return ID; }
     inline int numCourses() { return courses.size(); }
+    void printCourses();
     std::string getFirstName();
     std::string getLastName();
     std::pair<std::string,std::string> getName();
 
-    std::vector<course>::iterator begin();
-    std::vector<course>::iterator end();
-    std::vector<course>::reverse_iterator rbegin();
-    std::vector<course>::reverse_iterator rend();
     course& operator[](int);
     const course& at(int);
 
@@ -99,7 +143,7 @@ public:
         for (auto i = 0; i < other.courses.size(); ++i)
         {
             if (i) out << std::setw(40) << std::right << ' ';
-            out << other.courses[i];
+            out << other.courses.at(i);
             if (i < other.courses.size()-1) out << std::endl;
         }
         return out;

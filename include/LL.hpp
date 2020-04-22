@@ -19,7 +19,7 @@ class OutOfBounds : public std::exception
 private:
     std::string msg;
 public:
-    OutOfBounds() : msg("Index out of bounds!") {}
+    OutOfBounds(const std::string& _msg = "Index out of bounds!") : msg(_msg) {}
     const char * what() const noexcept { return msg.c_str(); }
 };
 
@@ -42,7 +42,17 @@ private:
         T data;
         Node* prev;
         Node* next;
-        Node(T _data) : data(_data), prev(nullptr), next(nullptr) {}
+        Node(T _data)// : data(_data), prev(nullptr), next(nullptr) {}
+        {
+            data = _data;
+            prev = nullptr;
+            next = nullptr;
+        }
+        Node()
+        {
+            prev = nullptr;
+            next = nullptr;
+        }
     };
 
     // doubly linked list
@@ -72,6 +82,8 @@ public:
         other._size = 0;
     }
 
+    void clear() { destroy(); }
+
     // move assignment operator
     LL& operator=(LL&& other)
     {
@@ -88,14 +100,15 @@ public:
     // insert an element at the front of the list
     void insert_front(const T& _data)
     {
-        Node* temp = new Node(_data);
+        Node* newnode = new Node;//(_data);
+        newnode->data = _data;
         if (head == nullptr)
-            head = tail = temp;
+            head = tail = newnode;
         else
         {
-            temp->next = head;
-            head->prev = temp;
-            head = temp;
+            newnode->next = head;
+            head->prev = newnode;
+            head = newnode;
         }
 
         ++_size;
@@ -104,14 +117,15 @@ public:
     // insert an element at the back of the list
     void insert_back(const T& _data)
     {
-        Node* temp = new Node(_data);
+        Node* newnode = new Node;//(_data);
+        newnode->data = _data;
         if (head == nullptr)
-            head = tail = temp;
+            head = tail = newnode;
         else
         {
-            temp->prev = tail;
-            tail->next = temp;
-            tail = temp;
+            newnode->prev = tail;
+            tail->next = newnode;
+            tail = newnode;
         }
         ++_size;
     }
@@ -200,22 +214,22 @@ public:
     void remove_front()
     {
         if (head == nullptr) throw EmptyList();
-        Node* temp = head;
-        head = head->next;
-        --_size;
-        if (_size <= 1) tail = head;
-        delete temp;
+        Node* temp = head->next;
+        if (temp) temp->prev = nullptr;
+        delete head;
+        head = temp;
+        if (--_size <= 1) tail = head;
     }
 
     // remove the tail element
     void remove_back()
     {
         if (tail == nullptr) throw EmptyList();
-        Node* temp = tail;
-        tail = temp->prev;
-        --_size;
-        if (_size <= 1) head = tail;
-        delete temp;
+        Node* temp = tail->prev;
+        if (temp) temp->next = nullptr;
+        delete tail;
+        tail = temp;
+        if (--_size <= 1) head = tail;
     }
 
     // copy constructor
@@ -233,8 +247,8 @@ public:
     // copy assignment operator
     LL& operator=(const LL& other)
     {
-        destroy();
-        _size = other._size;
+        if (head) destroy();
+        //_size = other._size;
         Node* curr = other.head;
         while (curr)
         {
@@ -381,7 +395,7 @@ public:
     // remove an individual element
     void remove(int pos)
     {
-        if (pos < 0 || pos >= _size) throw OutOfBounds();
+        if (pos < 0 || _size == 0 || pos >= _size) throw OutOfBounds();
         if (pos == 0)
         {
             remove_front();
@@ -398,106 +412,9 @@ public:
         Node* currNext = curr->next;
         currPrev->next = currNext;
         currNext->prev = currPrev;
+        --_size;
         delete curr;
     }
-
-    /*class iterator
-    {
-    friend class LL;
-    private:
-        Node* it;
-        iterator(Node* temp) : it(temp) {}
-
-    public:
-        iterator() : it(nullptr) {}
-
-        inline bool operator!=(const iterator& other) const { return it != other.it; }
-        inline bool operator==(const iterator& other) const { return it == other.it; }
-
-
-        T& operator*() const { return it->data; }
-        T* operator->() const { return &it->data; }
-        iterator operator++()
-        {
-            iterator _it = it;
-            it = it->next;
-            return _it;
-        }
-        iterator operator++(int)
-        {
-            iterator _it = it;
-            it = it->next;
-            return _it;
-        }
-        iterator operator--()
-        {
-            iterator _it = it;
-            it = it->prev;
-            return _it;
-        }
-        iterator operator--(int)
-        {
-            iterator _it = it;
-            it = it->prev;
-            return _it;
-        }
-    };
-
-    class reverse_iterator
-    {
-    friend class LL;
-    private:
-        Node* it;
-        reverse_iterator(Node* temp) : it(temp) {}
-
-    public:
-        reverse_iterator() : it(nullptr) {}
-
-        inline bool operator!=(const reverse_iterator& other) const { return it != other.it; }
-        inline bool operator==(const reverse_iterator& other) const { return it == other.it; }
-
-        T& operator*() const { return it->data; }
-        iterator operator++()
-        {
-            iterator _it = it;
-            it = it->prev;
-            return _it;
-        }
-        iterator operator++(int)
-        {
-            iterator _it = it;
-            it = it->prev;
-            return _it;
-        }
-        iterator operator--()
-        {
-            iterator _it = it;
-            it = it->next;
-            return _it;
-        }
-        iterator operator--(int)
-        {
-            iterator _it = it;
-            it = it->next;
-            return _it;
-        }
-    };
-
-    iterator begin() { return iterator(head);}
-    iterator end() { return iterator(nullptr); }
-
-    void erase(iterator it)
-    {
-        if (it == iterator(head))
-        {
-            Node* temp = head;
-            delete temp;
-            head = temp;
-        }
-    }
-
-    const reverse_iterator rbegin() { return reverse_iterator(tail);}
-    const reverse_iterator rend() { return reverse_iterator(nullptr); }*/
 };
 
 #endif // LL_H

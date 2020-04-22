@@ -28,9 +28,27 @@ void Database::insertFromFile(const Student &s)
         }
         catch (const std::exception& e)
         {
-            std::cout << e.what() << std::endl;
+            std::cout << "insertFromFile(const Student&): " << e.what() << std::endl;
         }
     }
+}
+
+void Database::remove(const std::string &fn, const std::string &ln)
+{
+    remove(Student(fn,ln));
+}
+
+void Database::remove(int id)
+{
+    for (int i = 0; i < students.size(); ++i)
+    {
+        if (students.at(i).getID() == id)
+        {
+            students.remove(i);
+            return;
+        }
+    }
+    throw StudentPresent();
 }
 
 void Database::readFromFile(const std::string& fname)
@@ -102,7 +120,7 @@ bool Database::insert(const Student& student)
     }
     catch (const std::exception& e)
     {
-        std::cout << e.what() << std::endl;
+        std::cout << "insert(const Student&): " <<  e.what() << std::endl;
         return false;
     }
 }
@@ -181,6 +199,8 @@ void Database::honorStudents()
 
 bool Database::areMultipleStudents(const Student &s)
 {
+    int l = students.find_last_instance(s,Student::lnCmp),
+        r = students.find_first_instance(s,Student::lnCmp);
     if (students.find_last_instance(s,Student::lnCmp) ==
         students.find_first_instance(s,Student::lnCmp)) return false;
     return true;
@@ -255,22 +275,23 @@ int Database::binsearchpos(const Student &s, int l, int r, compare cmp)
 
 Student& Database::findStudent(const Student& s)
 {
-    return binsearch(s,0,students.size()-1,Student::lniCheckCmp);
+    auto cmp = (s.getID() <= 0) ? Student::lnCmp : Student::lniCmp;
+    return binsearch(s,0,students.size()-1,cmp);
 }
 
-Student Database::findStudent(int _id)
+Student& Database::findStudent(int _id)
 {
-    LL<Student> byid;
-    for (int i = 0; i < students.size(); ++i)
-    {
-        byid.ordered_insert(students.at(i), Student::idCmp);
-    }
-    Student temp = binsearch(Student("","",_id),byid,0,byid.size()-1,Student::idCmp);
-    return temp;
+   for (int i = 0; i < students.size(); ++i)
+   {
+       if (students[i].getID() == _id) return students[i];
+   }
+   throw StudentNotFound();
 }
 
 void Database::remove(const Student& s)
 {
-    int pos = binsearchpos(s,0,students.size()-1,Student::lniCmp);
+    auto cmp = (s.getID() <= 0) ? Student::lnCmp : Student::lniCmp;
+    int pos = binsearchpos(s,0,students.size()-1,cmp);
+    Student temp = students.at(pos);
     students.remove(pos);
 }

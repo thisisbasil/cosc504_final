@@ -113,8 +113,8 @@ int Student::gpaCmp(const Student &l, const Student &r)
 
     int gpaL = l.getGPA(), gpaR = r.getGPA();
     if (gpaL == gpaR) return 0;
-    if (gpaL > gpaR) return 1;
-    return -1;
+    if (gpaL > gpaR) return -1;//1;
+    return 1;//-1;
 }
 
 int Student::fnCmp(const Student &l, const Student &r)
@@ -136,7 +136,7 @@ int Student::idCmp(const Student &l, const Student &r)
 int Student::lniCmp(const Student &l, const Student &r)
 {
     std::string _l = l.name.second + l.name.first + std::to_string(l.ID),
-                _r = r.name.second + r.name.first + std::to_string(l.ID);
+                _r = r.name.second + r.name.first + std::to_string(r.ID);
     if (_l == _r) throw StudentPresent();
     if (_l > _r) return 1;
     return -1;

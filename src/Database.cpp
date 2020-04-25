@@ -5,15 +5,6 @@ using std::cout;
 using std::endl;
 using std::cin;
 
-class StudentNotFound : public std::exception
-{
-private:
-    std::string msg;
-public:
-    StudentNotFound() : msg("Student not found!") {}
-    const char * what() const noexcept { return msg.c_str(); }
-};
-
 void Database::insertFromFile(const Student &s)
 {
     try
@@ -132,7 +123,13 @@ void Database::sortByID()
     {
         other.ordered_insert(students[i],Student::idCmp);
     }
-    std::cout << other << std::endl;
+    std::cout << std::setw(15) << std::left << "First Name"
+              << std::setw(15) << std::left << "Last Name"
+              << std::setw(10) << std::left << "ID"
+              << std::setw(10) << std::left << "Course"
+              << std::setw(10) << std::left << "Credits"
+              << std::setw(5) << std::left << "Grade"
+              << std::endl << other << std::endl;
 }
 
 void Database::sortByGPA()
@@ -143,7 +140,13 @@ void Database::sortByGPA()
         Student temp = students[i];
         other.ordered_insert(temp,Student::gpaCmp);
     }
-    std::cout << other << std::endl;
+    std::cout << std::setw(15) << std::left << "First Name"
+              << std::setw(15) << std::left << "Last Name"
+              << std::setw(10) << std::left << "ID"
+              << std::setw(10) << std::left << "Course"
+              << std::setw(10) << std::left << "Credits"
+              << std::setw(5) << std::left << "Grade"
+              << std::endl << other << std::endl;
 }
 
 void Database::sortByName()
@@ -153,33 +156,14 @@ void Database::sortByName()
     {
         other.ordered_insert(students[i],Student::fnCmp);
     }
-    std::cout << other << std::endl;
+    std::cout << std::setw(15) << std::left << "First Name"
+              << std::setw(15) << std::left << "Last Name"
+              << std::setw(10) << std::left << "ID"
+              << std::setw(10) << std::left << "Course"
+              << std::setw(10) << std::left << "Credits"
+              << std::setw(5) << std::left << "Grade"
+              << std::endl << other << std::endl;
 }
-
-/*LL<Student>::iterator Database::findStudent(int ID)
-{
-    Student temp("","",ID);
-    LL<Student>::iterator i = students.begin();
-    while (i != students.end())
-    {
-        if (Student::idEQ(temp,*i))
-            return i;
-        i++;
-    }
-    throw StudentNotFound();
-}
-
-LL<Student>::iterator Database::findStudent(const Student& s)
-{
-    LL<Student>::iterator i = students.begin();
-    while(i != students.end())
-    {
-        if (Student::lastNameEQ(s,*i) && Student::firstNameEQ(s,*i))
-            return i;
-        i++;
-    }
-    throw StudentNotFound();
-}*/
 
 void Database::honorStudents()
 {
@@ -187,6 +171,8 @@ void Database::honorStudents()
     int count = 0;
     for (int i = 0; i < students.size(); ++i)
     {
+        Student s = students[i];
+        auto gpa = s.getGPA();
         if (students[i].getGPA() >= gpaHonor)
         {
             ++count;

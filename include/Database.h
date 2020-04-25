@@ -9,6 +9,8 @@
 #include <fstream>
 #include "LL.hpp"
 #include <exception>
+
+// constants related to gpa
 const double gpaHonor = 3.6;
 const double gpaWarn = 2.5;
 const double gpaFail = 2.0;
@@ -22,11 +24,22 @@ public:
     const char * what() const noexcept { return msg.c_str(); }
 };
 
+class StudentNotFound : public std::exception
+{
+private:
+    std::string msg;
+public:
+    StudentNotFound() : msg("Student not found!") {}
+    const char * what() const noexcept { return msg.c_str(); }
+};
+
+// database class
 class Database
 {
 private:
     LL<Student> students;
 
+    // various binary searches which return a ref to a student, or it's position
     template <typename compare>
     Student& binsearch(const Student&, int, int, compare);
 
@@ -67,10 +80,6 @@ public:
     void warningStudents();
     void failingStudents();
     void honorStudents();
-    //LL<Student>::iterator findStudent(int);
-    //LL<Student>::iterator findStudent(const Student&);
-
-    //inline int numStudents() { return students.size(); }
 
     friend std::ostream& operator<<(std::ostream& out, const Database& other)
     {

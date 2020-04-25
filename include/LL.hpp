@@ -272,7 +272,7 @@ public:
         if (idx < 0 || _size == 0 || idx >= _size) throw OutOfBounds();
         // linked lists are not sequential memory, so it can get somewhat tedious
         // to loop all the way from beginning to end. examine the index's position 
-        // in relation to the point and traverse from there
+        // in relation to the midpoint and traverse from there
         Node* curr;
         int mid = _size/2;
         if (idx > mid)
@@ -358,7 +358,7 @@ public:
         if (idx < 0 || _size == 0 || idx >= _size) throw OutOfBounds();
         // linked lists are not sequential memory, so it can get somewhat tedious
         // to loop all the way from beginning to end. examine the index's position 
-        // in relation to the point and traverse from there
+        // in relation to the midpoint and traverse from there
         Node* curr;
         int mid = _size/2;
         if (idx > mid)

@@ -18,12 +18,14 @@ int main(int argc, char** argv)
     Database d;
     d.readFromFile(fname);
     bool exit = false;
+    cout << d << endl
+          << "number of students: " << d.numStudents() << std::endl;
     while(!exit)
     {
         std::string option;
         cout << "Options: " << endl
              << " 1. Add new student" << endl             // X
-             << " 2. Add course for student" << endl
+             << " 2. Add course for student" << endl      // X
              << " 3. Remove student" << endl              // X
              << " 4. Remove course for student" << endl   // X
              << " 5. Find GPA for student" << endl        // X

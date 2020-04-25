@@ -70,6 +70,13 @@ course inputCourse()
 void AddStudent(Database& d, bool fromFile)
 {
     Student tempS = inputStudent();
+    try
+    {
+        d.findStudent(tempS.getID());
+        std::cout << "Student already present!" << std::endl;
+        return;
+    }
+    catch (const std::exception& s) {}
     int num = 0;
     while (true)
     {
@@ -83,22 +90,13 @@ void AddStudent(Database& d, bool fromFile)
         tempS.insertCourse(inputCourse());
         --num;
     }
-
-    bool res = d.insert(tempS);
-    if (res) std::cout << d << std::endl;
+    d.insert(tempS);
+    std::cout << d << std::endl
+              << "Total number of students: " << d.numStudents() << std::endl;
 }
 
 void AddCourse(Database& d)
 {
-    /*Student temp = inputStudent(NAME);
-    if (d.areMultipleStudents(temp))
-    {
-        int id;
-        std::cout << "Multiple students with that name! Please enter ID also: ";
-        std::cin >> id;
-        temp = std::move(Student(temp.getFirstName(),temp.getLastName(),id));
-    }
-    AddCourse(d,temp);*/
     if (d.numStudents() == 0)
     {
         std::cout << "No students currently enrolled!" << std::endl;
@@ -123,6 +121,15 @@ void AddCourse(Database& d)
         }
         else
         {
+            try
+            {
+                d.findStudent(s);
+            }
+            catch(const std::exception& e)
+            {
+                std::cout << e.what() << std::endl;
+                return;
+            }
             course c = inputCourse();
             d.findStudent(s).insertCourse(c);
         }
@@ -132,6 +139,15 @@ void AddCourse(Database& d)
         int id;
         std::cout << "Enter ID: ";
         std::cin >> id;
+        try
+        {
+            d.findStudent(id);
+        }
+        catch(const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+            return;
+        }
         course c = inputCourse();
         d.findStudent(id).insertCourse(c);
     }

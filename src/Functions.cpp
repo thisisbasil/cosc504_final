@@ -90,9 +90,16 @@ void AddStudent(Database& d, bool fromFile)
         tempS.insertCourse(inputCourse());
         --num;
     }
-    d.insert(tempS);
-    std::cout << d << std::endl
-              << "Total number of students: " << d.numStudents() << std::endl;
+    try
+    {
+        d.insert(tempS);
+     std::cout << d << std::endl
+               << "Total number of students: " << d.numStudents() << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void AddCourse(Database& d)
@@ -219,14 +226,51 @@ void RemoveStudent(Database& d)
 
 void FindGPA(Database& d)
 {
-    try
+    int type;
+    while (true)
     {
-        double gpa = d.findStudent(inputStudent()).getGPA();
-        std::cout << "GPA is: " << gpa/1.0 << std::endl;
+        std::cout << "Find student by (1) name or by (2) id? ";
+        std::cin >> type;
+        if (type != NAME && type != ID)
+            std::cout << "Invalid option!" << std::endl;
+        else break;
     }
-    catch (const std::exception& e)
+    if (type == NAME)
     {
-        std::cout << "FindGPPA(Database&): " << e.what() << std::endl;
+        Student s = inputStudent(NAME);
+        if (d.areMultipleStudents(s))
+        {
+            std::cout << "Multiple students with that name! ";
+            type = ID;
+        }
+        else
+        {
+            try
+            {
+                double gpa = d.findStudent(s).getGPA();
+                std::cout << "GPA is: " << gpa << std::endl;
+            }
+            catch(const std::exception& e)
+            {
+                std::cout << e.what() << std::endl;
+            }
+            return;
+        }
+    }
+    if (type == ID)
+    {
+        int id;
+        std::cout << "Enter ID: ";
+        std::cin >> id;
+        try
+        {
+            double gpa = d.findStudent(id).getGPA();
+            std::cout << "GPA is: " << gpa << std::endl;
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
     }
 }
 
@@ -263,7 +307,7 @@ void FindStudent(Database& d)
     }
     catch (const std::exception& e)
     {
-        std::cout << "FindStudent(Database&): " << e.what() << std::endl;
+        std::cout << e.what() << std::endl;
     }
 }
 
@@ -312,26 +356,40 @@ void RemoveCourse(Database& d)
         }
         else
         {
-            d.findStudent(s).removeCourse();
-            if (d.findStudent(s).numCourses() == 0)
+            try
             {
-                std::cout << "Student is no longer enrolled in courses," <<
-                             " removing from the database" << std::endl;
-                d.remove(s);
+                d.findStudent(s).removeCourse();
+                if (d.findStudent(s).numCourses() == 0)
+                {
+                    std::cout << "Student is no longer enrolled in courses," <<
+                                 " removing from the database" << std::endl;
+                    d.remove(s);
+                }
+            }
+            catch (const std::exception& e)
+            {
+                std::cout << e.what() << std::endl;
             }
         }
     }
     if (type == ID)
     {
-        int id;
-        std::cout << "Enter ID: ";
-        std::cin >> id;
-        d.findStudent(id).removeCourse();
-        if (d.findStudent(id).numCourses() == 0)
+        try
         {
-            std::cout << "Student is no longer enrolled in courses," <<
-                         " removing from the database" << std::endl;
-            d.remove(id);
+            int id;
+            std::cout << "Enter ID: ";
+            std::cin >> id;
+            d.findStudent(id).removeCourse();
+            if (d.findStudent(id).numCourses() == 0)
+            {
+                std::cout << "Student is no longer enrolled in courses," <<
+                             " removing from the database" << std::endl;
+                d.remove(id);
+            }
+       }
+       catch (const std::exception& e)
+       {
+            std::cout << e.what() << std::endl;
         }
     }
 }
@@ -358,23 +416,37 @@ void ModifyGrade(Database& d)
     int pos;
     if (type == NAME)
     {
-        s = inputStudent(NAME);
-        if (d.areMultipleStudents(s))
+        try
         {
-            std::cout << "Multiple students with that name! ";
-            type = ID;
-        }
-        else
-        {
+            s = inputStudent(NAME);
+            if (d.areMultipleStudents(s))
+            {
+                std::cout << "Multiple students with that name! ";
+                type = ID;
+            }
+            else
+            {
             d.findStudent(s).modifyCourse();
+            }
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
         }
     }
     if (type == ID)
     {
-        int id;
-        std::cout << "Enter ID: ";
-        std::cin >> id;
-        d.findStudent(id).modifyCourse();
+        try
+        {
+            int id;
+            std::cout << "Enter ID: ";
+            std::cin >> id;
+            d.findStudent(id).modifyCourse();
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
     }
 }
 

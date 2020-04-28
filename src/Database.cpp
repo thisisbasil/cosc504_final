@@ -19,7 +19,7 @@ void Database::insertFromFile(const Student &s)
         }
         catch (const std::exception& e)
         {
-            std::cout << "insertFromFile(const Student&): " << e.what() << std::endl;
+            std::cout << e.what() << std::endl;
         }
     }
 }
@@ -39,7 +39,7 @@ void Database::remove(int id)
             return;
         }
     }
-    throw StudentPresent();
+    throw StudentNotFound();
 }
 
 void Database::readFromFile(const std::string& fname)
@@ -111,7 +111,7 @@ bool Database::insert(const Student& student)
     }
     catch (const std::exception& e)
     {
-        std::cout << "insert(const Student&): " <<  e.what() << std::endl;
+        std::cout <<  e.what() << std::endl;
         return false;
     }
 }

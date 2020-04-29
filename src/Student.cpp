@@ -40,6 +40,13 @@ void Student::insertCourse(const std::string& name, int credits, char grade)
 
 void Student::insertCourse(const course& _course)
 {
+    for (int i = 0; i < courses.size(); ++i)
+    {
+        if (_course.name == courses[i].name)
+        {
+            throw ClassPresent();
+        }
+    }
     try
     {
         courses.ordered_insert(_course,course::courseCmpI);

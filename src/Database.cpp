@@ -171,13 +171,12 @@ void Database::honorStudents()
     int count = 0;
     for (int i = 0; i < students.size(); ++i)
     {
-        Student s = students[i];
-        auto gpa = s.getGPA();
         if (students[i].getGPA() >= gpaHonor)
         {
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
-                      << std::setw(15) << students[i].getLastName() << std::endl;
+                      << std::setw(15) << students[i].getLastName()
+                      << "GPA: " << students[i].getGPA() << std::endl;
         }
     }
     std::cout << "Total number of honors students: " << count << std::endl;
@@ -185,8 +184,6 @@ void Database::honorStudents()
 
 bool Database::areMultipleStudents(const Student &s)
 {
-    int l = students.find_last_instance(s,Student::lnCmp),
-        r = students.find_first_instance(s,Student::lnCmp);
     if (students.find_last_instance(s,Student::lnCmp) ==
         students.find_first_instance(s,Student::lnCmp)) return false;
     return true;
@@ -202,7 +199,8 @@ void Database::warningStudents()
         {
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
-                      << std::setw(15) << students[i].getLastName() << std::endl;
+                      << std::setw(15) << students[i].getLastName()
+                      << "GPA: " << students[i].getGPA() << std::endl;
         }
     }
     std::cout << "Total number of students on warning: " << count << std::endl;
@@ -218,7 +216,8 @@ void Database::failingStudents()
         {
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
-                      << std::setw(15) << students[i].getLastName() << std::endl;
+                      << std::setw(15) << students[i].getLastName()
+                      <<  "GPA: " << students[i].getGPA() << std::endl;
         }
     }
     std::cout << "Total number of failing students: " << count << std::endl;

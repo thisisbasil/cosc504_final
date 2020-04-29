@@ -18,8 +18,6 @@ int main(int argc, char** argv)
     Database d;
     d.readFromFile(fname);
     bool exit = false;
-    cout << d << endl
-          << "number of students: " << d.numStudents() << std::endl;
     while(!exit)
     {
         std::string option;
@@ -43,6 +41,7 @@ int main(int argc, char** argv)
 
         int selection = 0;
         if (isValid(option)) selection = std::stoi(option);
+
         switch(selection)
         {
         case 1: AddStudent(d); break;

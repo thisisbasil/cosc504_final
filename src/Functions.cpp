@@ -87,8 +87,15 @@ void AddStudent(Database& d, bool fromFile)
     }
     while (num > 0)
     {
-        tempS.insertCourse(inputCourse());
-        --num;
+        try
+        {
+            tempS.insertCourse(inputCourse());
+            --num;
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
     }
     try
     {
@@ -109,7 +116,7 @@ void AddCourse(Database& d)
         std::cout << "No students currently enrolled!" << std::endl;
         return;
     }
-    int type, pos;
+    int type;
     Student s;
     while(true)
     {
@@ -131,14 +138,14 @@ void AddCourse(Database& d)
             try
             {
                 d.findStudent(s);
+                course c = inputCourse();
+                d.findStudent(s).insertCourse(c);
             }
             catch(const std::exception& e)
             {
                 std::cout << e.what() << std::endl;
                 return;
             }
-            course c = inputCourse();
-            d.findStudent(s).insertCourse(c);
         }
     }
     if (type == ID)
@@ -149,21 +156,16 @@ void AddCourse(Database& d)
         try
         {
             d.findStudent(id);
+            course c = inputCourse();
+            d.findStudent(id).insertCourse(c);
         }
         catch(const std::exception& e)
         {
             std::cout << e.what() << std::endl;
             return;
         }
-        course c = inputCourse();
-        d.findStudent(id).insertCourse(c);
     }
-}
-
-void AddCourse(Database& d, const Student& s)
-{
-
-    course c = inputCourse();
+    std::cout << d << std::endl;
 }
 
 void RemoveStudent(Database& d)
@@ -345,7 +347,6 @@ void RemoveCourse(Database& d)
         else
             loop = false;
     }
-    int pos;
     if (type == NAME)
     {
         s = inputStudent(NAME);
@@ -364,6 +365,7 @@ void RemoveCourse(Database& d)
                     std::cout << "Student is no longer enrolled in courses," <<
                                  " removing from the database" << std::endl;
                     d.remove(s);
+                    std::cout << d << std::endl;
                 }
             }
             catch (const std::exception& e)
@@ -385,7 +387,9 @@ void RemoveCourse(Database& d)
                 std::cout << "Student is no longer enrolled in courses," <<
                              " removing from the database" << std::endl;
                 d.remove(id);
+                std::cout << d << std::endl;
             }
+            std::cout << d << std::endl;
        }
        catch (const std::exception& e)
        {
@@ -413,7 +417,7 @@ void ModifyGrade(Database& d)
         else
             loop = false;
     }
-    int pos;
+
     if (type == NAME)
     {
         try
@@ -428,6 +432,8 @@ void ModifyGrade(Database& d)
             {
             d.findStudent(s).modifyCourse();
             }
+            std::cout << d.findStudent(s) << std::endl
+                      << "GPA: " << d.findStudent(s).getGPA() << std::endl;
         }
         catch (const std::exception& e)
         {
@@ -442,6 +448,8 @@ void ModifyGrade(Database& d)
             std::cout << "Enter ID: ";
             std::cin >> id;
             d.findStudent(id).modifyCourse();
+            std::cout << d.findStudent(id) << std::endl
+                      << "GPA: " << d.findStudent(id).getGPA() << std::endl;
         }
         catch (const std::exception& e)
         {

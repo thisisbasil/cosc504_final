@@ -4,6 +4,7 @@
 #include "Database.h"
 #include "Student.h"
 
+// various helper functions to aid in user input
 bool isValid(const std::string&);
 void AddStudent(Database& d, bool fromFile = false);
 void AddCourse(Database& d);

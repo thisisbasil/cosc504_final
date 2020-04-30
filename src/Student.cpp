@@ -1,6 +1,7 @@
 ﻿#include "include/Student.h"
 #include <exception>
 
+// copy assignment and constructor
 Student& Student::operator=(const Student& other)
 {
     name = other.name;
@@ -16,6 +17,7 @@ Student::Student(const Student& other)
     courses = other.courses;
 }
 
+// move assignment and constructor
 Student::Student(Student&& other)
 {
     name = std::move(other.name);
@@ -33,6 +35,7 @@ Student& Student::operator=(Student&& other)
     return *this;
 }
 
+// various ways to insert a course
 void Student::insertCourse(const std::string& name, int credits, char grade)
 {
     insertCourse(course(name, credits, std::toupper(grade)));
@@ -73,16 +76,23 @@ void Student::insertCourse(const Student &s)
     }
 }
 
+// allow access to a particular element
+// does this via reference so that modification
+// can be done
 course& Student::operator[](int idx)
 {
     return courses[idx];
 }
 
+// allow access to a particular element
+// does this via constand refence so that
+// no information can be modified
 const course& Student::at(int idx)
 {
     return courses.at(idx);
 }
 
+// returns the name in various different manners
 std::string Student::getFirstName()
 {
     return name.first;
@@ -98,6 +108,10 @@ std::pair<std::string,std::string> Student::getName()
     return name;
 }
 
+// comparison operators to determine how 2 students
+// compare in all aspects.
+// equivalence and non-equivalence are the only 2
+// operators that make sense
 bool Student::operator==(const Student &other) const
 {
     if (name.second == other.name.second &&
@@ -115,6 +129,8 @@ bool Student::operator!=(const Student &other) const
 }
 
 // static comparison function
+
+// sort by gpa
 int Student::gpaCmp(const Student &l, const Student &r)
 {
 
@@ -124,15 +140,17 @@ int Student::gpaCmp(const Student &l, const Student &r)
     return 1;//-1;
 }
 
+// sort by first name, last name
 int Student::fnCmp(const Student &l, const Student &r)
 {
-    std::string _l = l.name.first + l.name.second,
-                _r = r.name.first + r.name.second;
+    std::string _l = l.name.first + l.name.second + std::to_string(l.ID),
+                _r = r.name.first + r.name.second + std::to_string(r.ID);
     if (_l == _r) return 0;
     if (_l > _r) return 1;
     return -1;
 }
 
+// sort student by id
 int Student::idCmp(const Student &l, const Student &r)
 {
     if (l.ID == r.ID) return 0;
@@ -140,6 +158,8 @@ int Student::idCmp(const Student &l, const Student &r)
     return -1;
 }
 
+// sort student by last name, throw exception if student
+// is already present
 int Student::lniCmp(const Student &l, const Student &r)
 {
     std::string _l = l.name.second + l.name.first + std::to_string(l.ID),
@@ -149,6 +169,8 @@ int Student::lniCmp(const Student &l, const Student &r)
     return -1;
 }
 
+// sort student by last name, don't throw exception if
+// student is already present
 int Student::lniCheckCmp(const Student &l, const Student &r)
 {
     std::string _l = l.name.second + l.name.first + std::to_string(l.ID),
@@ -158,6 +180,7 @@ int Student::lniCheckCmp(const Student &l, const Student &r)
     return -1;
 }
 
+// sort by last name without ID
 int Student::lnCmp(const Student &l, const Student &r)
 {
     std::string _l = l.name.second + l.name.first,
@@ -167,6 +190,7 @@ int Student::lnCmp(const Student &l, const Student &r)
     return -1;
 }
 
+// calculates and returns gpa
 double Student::getGPA() const
 {
     double retval = 0.0;
@@ -189,6 +213,7 @@ double Student::getGPA() const
     return retval/hours;
 }
 
+// removes a course, allows for user input
 void Student::removeCourse()
 {
     for (int i = 0; i < courses.size(); ++i)
@@ -213,6 +238,7 @@ void Student::removeCourse()
     courses.remove(posn);
 }
 
+// modify a course, allows for user input
 void Student::modifyCourse()
 {
     for (int i = 0; i < courses.size(); ++i)

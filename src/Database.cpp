@@ -5,6 +5,9 @@ using std::cout;
 using std::endl;
 using std::cin;
 
+// takes a student that was read from a file and inserts it
+// this is different because it allows insertion of a student
+// with the same name and id
 void Database::insertFromFile(const Student &s)
 {
     try
@@ -24,11 +27,13 @@ void Database::insertFromFile(const Student &s)
     }
 }
 
+// constructs a student from a name and tries to remove
 void Database::remove(const std::string &fn, const std::string &ln)
 {
     remove(Student(fn,ln));
 }
 
+// searches the ids of students and tries to remove
 void Database::remove(int id)
 {
     for (int i = 0; i < students.size(); ++i)
@@ -42,6 +47,7 @@ void Database::remove(int id)
     throw StudentNotFound();
 }
 
+// read from file as opposed to standard input
 void Database::readFromFile(const std::string& fname)
 {
     std::ifstream file(fname.c_str());
@@ -85,6 +91,7 @@ void Database::readFromFile(std::istream& file)
     }
 }
 
+// writes to file instead of standard out
 void Database::writeToFile(const std::string &fname)
 {
     std::ofstream file(fname.c_str());
@@ -96,6 +103,7 @@ void Database::writeToFile(std::ostream& file)
     file << *this << endl;
 }
 
+// normal insertion functions
 bool Database::insert(const std::string &fname, const std::string &lname, int ID)
 {
     Student s (fname,lname,ID);
@@ -116,6 +124,9 @@ bool Database::insert(const Student& student)
     }
 }
 
+// constructs a new linked list, passing
+// in a comparator function to allow for
+// order insertion by id
 void Database::sortByID()
 {
     LL<Student> other;
@@ -132,6 +143,9 @@ void Database::sortByID()
               << std::endl << other << std::endl;
 }
 
+// constructs a new linked list, passing
+// in a comparator function to allow for
+// order insertion by gpa
 void Database::sortByGPA()
 {
     LL<Student> other;
@@ -149,6 +163,9 @@ void Database::sortByGPA()
               << std::endl << other << std::endl;
 }
 
+// constructs a new linked list, passing
+// in a comparator function to allow for
+// order insertion by first name
 void Database::sortByName()
 {
     LL<Student> other;
@@ -165,6 +182,7 @@ void Database::sortByName()
               << std::endl << other << std::endl;
 }
 
+// outputs honors students
 void Database::honorStudents()
 {
     std::cout << "Honors students: " << std::endl;
@@ -182,6 +200,7 @@ void Database::honorStudents()
     std::cout << "Total number of honors students: " << count << std::endl;
 }
 
+// returns whether or not two students have the same name
 bool Database::areMultipleStudents(const Student &s)
 {
     if (students.find_last_instance(s,Student::lnCmp) ==
@@ -189,6 +208,8 @@ bool Database::areMultipleStudents(const Student &s)
     return true;
 }
 
+// outputs the number of warning students, this includes
+// failing students as well
 void Database::warningStudents()
 {
     std::cout << "Warning students: " << std::endl;
@@ -206,6 +227,7 @@ void Database::warningStudents()
     std::cout << "Total number of students on warning: " << count << std::endl;
 }
 
+// outputs the number of failing students
 void Database::failingStudents()
 {
     std::cout << "Failing students: " << std::endl;
@@ -223,6 +245,8 @@ void Database::failingStudents()
     std::cout << "Total number of failing students: " << count << std::endl;
 }
 
+// binary search of the linked list to find a student
+// returns a reference to the student
 template <typename compare>
 Student& Database::binsearch(const Student& s, int l, int r, compare cmp)
 {
@@ -235,6 +259,9 @@ Student& Database::binsearch(const Student& s, int l, int r, compare cmp)
     else return binsearch(s,l,mid-1,cmp);
 }
 
+// binary search of linked list to find a student
+// comparison is done through a comparison function
+// returns a reference to the student
 template <typename compare>
 Student& Database::binsearch(const Student& s, LL<Student>& ll, int l, int r, compare cmp)
 {
@@ -247,6 +274,9 @@ Student& Database::binsearch(const Student& s, LL<Student>& ll, int l, int r, co
     else return binsearch(s,ll,l,mid-1,cmp);
 }
 
+// binary search of linked list to find a student
+// comparison is done through a comparison function
+// returns the position in the linked list
 template <typename compare>
 int Database::binsearchpos(const Student &s, int l, int r, compare cmp)
 {
@@ -258,6 +288,7 @@ int Database::binsearchpos(const Student &s, int l, int r, compare cmp)
     else return binsearchpos(s,l,mid-1,cmp);
 }
 
+// various methods to find a student and return a reference
 Student& Database::findStudent(const Student& s)
 {
     auto cmp = (s.getID() <= 0) ? Student::lnCmp : Student::lniCmp;
@@ -273,6 +304,7 @@ Student& Database::findStudent(int _id)
    throw StudentNotFound();
 }
 
+// removes a student from the linked list
 void Database::remove(const Student& s)
 {
     auto cmp = (s.getID() <= 0) ? Student::lnCmp : Student::lniCmp;

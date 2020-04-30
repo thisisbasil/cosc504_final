@@ -1,7 +1,11 @@
 #include "include/Functions.h"
 #include <string>
 
+// enumerated type to determine the typf of input the user
+// desires
 enum StudentInputType { ALL, NAME, ID };
+
+// determines if user input is valid
 bool isValid(const std::string& s)
 {
     for(const auto& c : s)
@@ -11,6 +15,7 @@ bool isValid(const std::string& s)
     return true;
 }
 
+// trims a string
 std::string trim(const std::string& str)
 {
     size_t first = str.find_first_not_of(' ');
@@ -22,6 +27,7 @@ std::string trim(const std::string& str)
     return str.substr(first, (last - first + 1));
 }
 
+// allows a user to input a student and returns it
 Student inputStudent(StudentInputType type = ALL)
 {
     std::string fname, lname;
@@ -41,6 +47,7 @@ Student inputStudent(StudentInputType type = ALL)
     return Student(std::move(trim(fname)),std::move(trim(lname)),id);
 }
 
+// allows user to input a course and returns it
 course inputCourse()
 {
     std::string name;
@@ -67,6 +74,7 @@ course inputCourse()
     return course(std::move(trim(name)), credits, std::toupper(grade));
 }
 
+// seeks to add a student to the database
 void AddStudent(Database& d, bool fromFile)
 {
     Student tempS = inputStudent();
@@ -109,6 +117,7 @@ void AddStudent(Database& d, bool fromFile)
     }
 }
 
+// adds a course to a student
 void AddCourse(Database& d)
 {
     if (d.numStudents() == 0)
@@ -168,6 +177,7 @@ void AddCourse(Database& d)
     std::cout << d << std::endl;
 }
 
+// removes a student from the database
 void RemoveStudent(Database& d)
 {
     if (d.numStudents() == 0)
@@ -226,6 +236,7 @@ void RemoveStudent(Database& d)
     }
 }
 
+// returns the gpa for a student
 void FindGPA(Database& d)
 {
     int type;
@@ -250,7 +261,7 @@ void FindGPA(Database& d)
             try
             {
                 double gpa = d.findStudent(s).getGPA();
-                std::cout << "GPA is: " << gpa << std::endl;
+                std::cout << "GPA: " << gpa << std::endl;
             }
             catch(const std::exception& e)
             {
@@ -267,7 +278,7 @@ void FindGPA(Database& d)
         try
         {
             double gpa = d.findStudent(id).getGPA();
-            std::cout << "GPA is: " << gpa << std::endl;
+            std::cout << "GPA: " << gpa << std::endl;
         }
         catch (const std::exception& e)
         {
@@ -276,6 +287,8 @@ void FindGPA(Database& d)
     }
 }
 
+// allows the user to sort the list by various
+// methods and then prints it
 void Sort(Database& d)
 {
     int option;
@@ -297,6 +310,8 @@ void Sort(Database& d)
     };
 }
 
+// allows the user to find a student and then
+// print out info
 void FindStudent(Database& d)
 {
     std::cout << "Enter student id: ";
@@ -313,6 +328,7 @@ void FindStudent(Database& d)
     }
 }
 
+// print out the types of students by grade
 void PrintHonors(Database& d)
 {
     d.honorStudents();
@@ -328,6 +344,8 @@ void PrintFail(Database& d)
     d.failingStudents();
 }
 
+// removes a course for a student in the
+// database
 void RemoveCourse(Database& d)
 {
     if (d.numStudents() == 0)
@@ -398,6 +416,7 @@ void RemoveCourse(Database& d)
     }
 }
 
+// modify a student's grade in a course
 void ModifyGrade(Database& d)
 {
     if (d.numStudents() == 0)
@@ -459,6 +478,7 @@ void ModifyGrade(Database& d)
 }
 
 
+// outputs to file
 void CreateList(Database& d)
 {
     std::string fname;

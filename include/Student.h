@@ -63,6 +63,8 @@ struct course
         if (name == other.name) return false;
         return true;
     }
+
+    // allow for the course to print itself
     friend std::istream& operator>>(std::istream& in, course& other)
     {
         in >> other.name >> other.credits >> other.grade;
@@ -92,6 +94,8 @@ class Student
 private:
     std::pair<std::string, std::string> name;
     int ID;
+
+    // linked list containing the courses
     LL<course> courses;
 
 public:
@@ -108,19 +112,26 @@ public:
     Student(std::pair<std::string, std::string> _name, int _ID = 0)
         : name(_name), ID(_ID) {}
 
+    // various methods to insert a course
     void insertCourse(const std::string&, int, char);
     void insertCourse(const Student& s);
     void insertCourse(const course&);
+
+    // remove and modify course grade
     void removeCourse();
     void modifyCourse();
+
+    // calculate and return gpa
     double getGPA() const;
+
+    // return id
     inline int getID() const { return ID; }
     inline int numCourses() { return courses.size(); }
-    void printCourses();
     std::string getFirstName();
     std::string getLastName();
     std::pair<std::string,std::string> getName();
 
+    // allows to iterate though the list
     course& operator[](int);
     const course& at(int);
 
@@ -128,6 +139,11 @@ public:
     bool operator!=(const Student&) const;
     void clearCourseList() { courses.clear(); }
 
+    // comparison functions:
+    // these allow for insertion into the linked list
+    // in various different manners. this makes it
+    // it easier to just create one linked list class
+    // and order it by whichever way the function allows
     static int gpaCmp(const Student&, const Student&);
     static int fnCmp(const Student&, const Student&);
     static int lniCmp(const Student&, const Student&);
@@ -135,6 +151,8 @@ public:
     static int idCmp(const Student&, const Student&);
     static int lnCmp(const Student&, const Student&);
 
+
+    // allow a student to print itself out
     friend std::ostream& operator<<(std::ostream& out, const Student& other)
     {
         out << std::setw(15) << std::left << other.name.first
@@ -149,6 +167,7 @@ public:
         return out;
     }
 
+    // allow a student to input
     friend std::istream& operator>>(std::iostream& in, Student& other)
     {
         std::string fname, lname;

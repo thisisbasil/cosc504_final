@@ -5,6 +5,7 @@
 #include <exception>
 #include <string>
 
+// various exceptions
 class EmptyList : public std::exception
 {
 private:
@@ -32,6 +33,7 @@ public:
     const char* what() const noexcept { return msg.c_str(); }
 };
 
+// templated linked list class to allow for storage of any type
 template <typename T>
 class LL
 {

@@ -1,0 +1,32 @@
+Basil Huffman
+huffmanb0301@students.bowiestate.edu
+
+COSC504 final program
+
+Originally built on Ubuntu 19.10 using g++ 9.2 using C++11
+
+Directory structure:
+
+- <base>:
+	+ Makefile: the makefile. To build, run: "make" in this directory.
+				It builds the program.
+- <base>/src: contains the source files, these are compiled by the Makefile.
+			  The files are
+	+ main.cpp: contains main() and is the entry point into the program
+	+ Student.cpp: contains the definition of the course and student classes
+	+ Database.cpp: contains the definition of the database class
+	+ Functions.cpp: contains the definition of the various helper functions
+					 which handle the various aspects of the program
+- <base>/include: contains the header files
+	+ Student.h: contains the declaration for the course and student classes
+	+ Database.h: contains the declaration for the database class
+	+ Functions.h: contains the declaration for the helper functions
+	+ LL.hpp: contains the declaration of definition of the linked list class.
+			  since this class is templated, it abides by standard practice
+			  of declaring and defining in the same file, as well as naming
+			  it .hpp instead of .h/.cpp
+- <base>/libs: contains the object files generating by intermediate compilation
+			   of the various .cpp files. They are then used to link when
+			   building the executable
+- <base>/bin: contains the executable built by make	
+	

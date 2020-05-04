@@ -35,6 +35,23 @@ Student& Student::operator=(Student&& other)
     return *this;
 }
 
+Student::Student(std::string fname, std::string lname, int _ID)
+{
+    std::for_each(fname.begin(), fname.end(),[](char& c) { c = std::toupper(c); });
+    std::for_each(lname.begin(), lname.end(),[](char& c) { c = std::toupper(c); });
+    name = std::make_pair(fname,lname);
+    ID = _ID;
+}
+
+Student::Student(std::pair<std::string,std::string> _name, int _ID)
+{
+    std::string fname = _name.first, lname = _name.second;
+    std::for_each(fname.begin(),fname.end(),[](char& c){ c = std::toupper(c); });
+    std::for_each(lname.begin(),lname.end(),[](char& c){ c = std::toupper(c); });
+    name = std::make_pair(fname,lname);
+    ID = _ID;
+}
+
 // various ways to insert a course
 void Student::insertCourse(const std::string& name, int credits, char grade)
 {

@@ -107,10 +107,8 @@ public:
     Student& operator=(const Student&);
     Student& operator=(Student&&);
 
-    Student(std::string fname, std::string lname, int _ID = 0)
-        : name(fname,lname), ID(_ID) {}
-    Student(std::pair<std::string, std::string> _name, int _ID = 0)
-        : name(_name), ID(_ID) {}
+    Student(std::string fname, std::string lname, int _ID = 0);
+    Student(std::pair<std::string, std::string> _name, int _ID = 0);
 
     // various methods to insert a course
     void insertCourse(const std::string&, int, char);
@@ -173,6 +171,8 @@ public:
         std::string fname, lname;
         other.courses.clear();
         in >> fname >> lname >> other.ID;
+        std::for_each(fname.begin(),fname.end(),[](char& c){ c = std::toupper(c); });
+        std::for_each(lname.begin(),lname.end(),[](char& c){ c = std::toupper(c); });
         other.name = std::make_pair(fname,lname);
         return in;
     }

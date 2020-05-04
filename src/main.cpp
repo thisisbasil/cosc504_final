@@ -26,22 +26,23 @@ int main(int argc, char** argv)
         cout << string('=',30) << endl;
         std::string option;
         cout << "Options: " << endl
-             << " 1. Add new student" << endl             // X
-             << " 2. Add course for student" << endl      // X
-             << " 3. Remove student" << endl              // X
-             << " 4. Remove course for student" << endl   // X
-             << " 5. Find GPA for student" << endl        // X
-             << " 6. Sort" << endl                        // X
-             << " 7. Search for student" << endl          // X
-             << " 8. Modify grade for student" << endl    // X
-             << " 9. Print honors students" << endl       // X
-             << "10. Print warnings" << endl              // X
-             << "11. Print failing students" << endl      // X
-             << "12. Print database" << endl              // X
-             << "13. Create class list" << endl           // X
-             << "14. Erase entire list" << endl           // X
-             << "15. Clear screen" << endl
-             << "16. Exit" << endl << "? ";               // X
+             << " 1. Add new student" << endl             
+             << " 2. Add course for student" << endl      
+             << " 3. Remove student" << endl              
+             << " 4. Remove course for student" << endl   
+             << " 5. Find GPA for student" << endl        
+             << " 6. Sort" << endl                        
+             << " 7. Search for student" << endl          
+             << " 8. Modify grade for student" << endl    
+             << " 9. Print honors students" << endl       
+             << "10. Print warnings" << endl              
+             << "11. Print failing students" << endl      
+             << "12. Print database" << endl              
+             << "13. Create class list" << endl           
+			 << "14. Save class list" << endl
+             << "15. Erase entire list" << endl           
+             << "16. Clear screen" << endl
+             << "17. Exit" << endl << "? ";               
         cin >> option;
 
         int selection = 0;
@@ -64,9 +65,10 @@ int main(int argc, char** argv)
                       << "Total number of students: "
                       << d.numStudents() << endl; break;
         case 13: CreateList(d); break;
-        case 14: d.clearList(); break;
-        case 15: cout << string(50,'\n') << endl; break;
-        case 16: exit = true; break;
+		case 14: Save(d); break;
+        case 15: d.clearList(); break;
+        case 16: cout << string(50,'\n') << endl; break;
+        case 17: exit = true; break;
         default: cout << "Invalid selection!" << endl;
         };
     }

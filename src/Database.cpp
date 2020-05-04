@@ -153,8 +153,8 @@ void Database::sortByGPA()
     LL<Student> other;
     for (int i = 0; i < students.size(); ++i)
     {
-        Student temp = students[i];
-        other.ordered_insert(temp,Student::gpaCmp);
+        auto temp = students[i];
+        other.ordered_insert(students[i],Student::gpaCmp);
     }
     std::cout << std::setw(15) << std::left << "First Name"
               << std::setw(15) << std::left << "Last Name"

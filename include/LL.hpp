@@ -160,11 +160,10 @@ public:
             if (res == -1) break;
             curr = curr->next;
         }
-        static int num = 0;
-        if (++num == 14)
+        if (curr == tail)
         {
-            int noop = 1;
-            noop++;
+            insert_back(_data);
+            return;
         }
         Node* temp = new Node(_data);
         temp->next = curr;

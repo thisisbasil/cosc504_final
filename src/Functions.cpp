@@ -352,7 +352,13 @@ void FindStudent(Database& d)
     try
     {
         Student temp = d.findStudent(id);
-        std::cout << temp << std::endl << "GPA: " << temp.getGPA() << std::endl;
+        std::cout << std::setw(15) << std::left << "First Name"
+                  << std::setw(15) << std::left << "Last Name"
+                  << std::setw(10) << std::left << "ID"
+                  << std::setw(10) << std::left << "Course"
+                  << std::setw(10) << std::left << "Credits"
+                  << std::setw(5) << std::left << "Grade"
+                  << std::endl << temp << std::endl << "GPA: " << temp.getGPA() << std::endl;
     }
     catch (const std::exception& e)
     {
@@ -395,6 +401,7 @@ void PrintFail(Database& d)
 // database
 void RemoveCourse(Database& d)
 {
+    bool removed = false;
     if (d.numStudents() == 0)
     {
         std::cout << "No students currently enrolled!" << std::endl;
@@ -427,15 +434,14 @@ void RemoveCourse(Database& d)
                 d.findStudent(s).removeCourse();
                 if (d.findStudent(s).numCourses() == 0)
                 {
-                    std::cout << "Student is no longer enrolled in courses," <<
-                                 " removing from the database" << std::endl;
+                    removed = true;
                     d.remove(s);
-                    std::cout << d << std::endl;
                 }
             }
             catch (const std::exception& e)
             {
                 std::cout << e.what() << std::endl;
+                return;
             }
         }
     }
@@ -449,17 +455,21 @@ void RemoveCourse(Database& d)
             d.findStudent(id).removeCourse();
             if (d.findStudent(id).numCourses() == 0)
             {
-                std::cout << "Student is no longer enrolled in courses," <<
-                             " removing from the database" << std::endl;
+                removed = true;
                 d.remove(id);
                 std::cout << d << std::endl;
             }
-            std::cout << d << std::endl;
        }
        catch (const std::exception& e)
        {
             std::cout << e.what() << std::endl;
+            return;
         }
+    }
+    std::cout << d << std::endl << "Total number of students: " << d.numStudents() << std::endl;
+    if (removed)
+    {
+        std::cout << "Student removed since no longer enrolled" << std::endl;
     }
 }
 
@@ -524,8 +534,25 @@ void ModifyGrade(Database& d)
     }
 }
 
+void Save(Database& d)
+{
+    std::string fname;
+    while(true)
+    {
+        std::cout << "Enter file name: ";
+        std::cin >> fname;
+        bool exists = file_exists(fname);
+        if (!exists) break;
+        std::cout << "File exists! Overwrite (y/n)? ";
+        char c;
+        std::cin >> c;
+        c = std::tolower(c);
+        if (c == 'y') break;
+    }
+    d.writeToFile(fname);
+}
 
-// outputs to file
+// creates database from file
 void CreateList(Database& d)
 {
     if (d.numStudents() > 0)
@@ -541,7 +568,7 @@ void CreateList(Database& d)
         }
         if (c == 'y')
         {
-            std::string fname;
+            /*std::string fname;
             while (true)
             {
                 std::cout << "Enter file name: ";
@@ -549,7 +576,8 @@ void CreateList(Database& d)
                 if (!file_exists(fname)) break;
                 std::cout << "File exists! ";
             }
-            d.writeToFile(fname);
+            d.writeToFile(fname);*/
+            Save(d);
         }
     }
     d.clearList();

@@ -174,7 +174,7 @@ int Student::lniCmp(const Student &l, const Student &r)
 int Student::lniCheckCmp(const Student &l, const Student &r)
 {
     std::string _l = l.name.second + l.name.first + std::to_string(l.ID),
-                _r = r.name.second + r.name.first + std::to_string(l.ID);
+                _r = r.name.second + r.name.first + std::to_string(r.ID);
     if (_l == _r) return 0;
     if (_l > _r) return 1;
     return -1;
@@ -241,6 +241,7 @@ void Student::removeCourse()
 // modify a course, allows for user input
 void Student::modifyCourse()
 {
+    std::cout << "Which course do you want to modify the grade for?" << std::endl;
     for (int i = 0; i < courses.size(); ++i)
     {
         std::cout << i+1 << ". " << courses.at(i) << std::endl;

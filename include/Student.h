@@ -34,7 +34,7 @@ class ClassPresent : public std::exception
 private:
     std::string msg;
 public:
-    ClassPresent() : msg("Student already registered in this clas!") {}
+    ClassPresent() : msg("Student already registered in this course") {}
     const char * what() const noexcept { return msg.c_str(); }
 };
 
@@ -50,7 +50,7 @@ struct course
     {
         out << std::setw(10) << std::left << other.name
             << std::setw(10) << std::left << other.credits
-            << std::setw(5) << std::left << other.grade;
+            << std::setw(1) << std::left << ' ' << other.grade;
         return out;
     }
     bool operator==(const course& other)

@@ -5,6 +5,23 @@
 // desires
 enum StudentInputType { ALL, NAME, ID };
 
+bool file_exists(std::string fname)
+{
+    std::ifstream file;
+    bool retval;
+    file.open(fname.c_str());
+    if (file)
+    {
+        retval = true;
+    }
+    else
+    {
+        retval = false;
+    }
+    file.close();
+    return retval;
+}
+
 // determines if user input is valid
 bool isValid(const std::string& s)
 {
@@ -239,6 +256,11 @@ void RemoveStudent(Database& d)
 // returns the gpa for a student
 void FindGPA(Database& d)
 {
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
     int type;
     while (true)
     {
@@ -291,6 +313,11 @@ void FindGPA(Database& d)
 // methods and then prints it
 void Sort(Database& d)
 {
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
     int option;
     bool loop = true;
     while (loop)
@@ -314,6 +341,11 @@ void Sort(Database& d)
 // print out info
 void FindStudent(Database& d)
 {
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
     std::cout << "Enter student id: ";
     int id;
     std::cin >> id;
@@ -331,16 +363,31 @@ void FindStudent(Database& d)
 // print out the types of students by grade
 void PrintHonors(Database& d)
 {
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
     d.honorStudents();
 }
 
 void PrintWarn(Database& d)
 {
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
     d.warningStudents();
 }
 
 void PrintFail(Database& d)
 {
+    if (d.numStudents() == 0)
+    {
+        std::cout << "No students currently enrolled!" << std::endl;
+        return;
+    }
     d.failingStudents();
 }
 
@@ -481,8 +528,42 @@ void ModifyGrade(Database& d)
 // outputs to file
 void CreateList(Database& d)
 {
+    if (d.numStudents() > 0)
+    {
+        char c;
+        while (true)
+        {
+            std::cout << "Save current database before loading new (y/n)? ";
+            std::cin >> c;
+            c = std::tolower(c);
+            if (c == 'y' || c == 'n') break;
+            std::cout << "Invalid selection! ";
+        }
+        if (c == 'y')
+        {
+            std::string fname;
+            while (true)
+            {
+                std::cout << "Enter file name: ";
+                std::cin >> fname;
+                if (!file_exists(fname)) break;
+                std::cout << "File exists! ";
+            }
+            d.writeToFile(fname);
+        }
+    }
+    d.clearList();
     std::string fname;
-    std::cout << "Enter name of output file: ";
+    std::cout << "Enter name of input file: ";
     std::cin >> fname;
-    d.writeToFile(fname);
+    while (!file_exists(fname))
+    {
+        std::cout << "File not present! Enter name of input file: ";
+        std::cin >> fname;
+    }
+    std::cout << "Creating database..." << std::endl;
+    d.readFromFile(fname);
+    std::cout << d << std::endl
+              << "Total number of students: "
+              << d.numStudents() << std::endl;
 }

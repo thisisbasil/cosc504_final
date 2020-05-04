@@ -19,4 +19,4 @@ Student:
 	$(CC) $(CPPFLAGS) -c src/Student.cpp -o libs/Student.o
 
 clean:
-	rm libs/*.o bin/final 
+	rm libs/*.o 

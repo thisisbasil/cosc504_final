@@ -142,13 +142,13 @@ public:
             return;
         }
         int res = cmp(_data,head->data);
-        if (res <= 0)
+        if (res < 0)
         {
             insert_front(_data);
             return;
         }
         res = cmp(_data,tail->data);
-        if (res >= 1)
+        if (res > 0)
         {
             insert_back(_data);
             return;
@@ -182,12 +182,12 @@ public:
             insert_front(_data);
             return;
         }
-        if (_data <= head->data)
+        if (_data < head->data)
         {
             insert_front(_data);
             return;
         }
-        if (_data >= tail->data)
+        if (_data > tail->data)
         {
             insert_back(_data);
             return;

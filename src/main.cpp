@@ -6,20 +6,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
 int main(int argc, char** argv)
 {
-    std::string fname { "/home/basil/school/programs/cosc504_final/input.txt" };
-    if (argc == 2)
+    std::string fname;
+    if (argc != 2)
     {
-        fname = argv[1];
+        cout << "No filename passed in! Creating empty list." << endl;
     }
+    else fname = argv[1];
 
     Database d;
-    d.readFromFile(fname);
+    if (fname.size() && file_exists(fname))
+    {
+        d.readFromFile(fname);
+    }
     bool exit = false;
     while(!exit)
     {
+        cout << string('=',30) << endl;
         std::string option;
         cout << "Options: " << endl
              << " 1. Add new student" << endl             // X
@@ -36,7 +40,8 @@ int main(int argc, char** argv)
              << "12. Print database" << endl              // X
              << "13. Create class list" << endl           // X
              << "14. Erase entire list" << endl           // X
-             << "15. Exit" << endl << "? ";               // X
+             << "15. Clear screen" << endl
+             << "16. Exit" << endl << "? ";               // X
         cin >> option;
 
         int selection = 0;
@@ -60,7 +65,8 @@ int main(int argc, char** argv)
                       << d.numStudents() << endl; break;
         case 13: CreateList(d); break;
         case 14: d.clearList(); break;
-        case 15: exit = true; break;
+        case 15: cout << string(50,'\n') << endl; break;
+        case 16: exit = true; break;
         default: cout << "Invalid selection!" << endl;
         };
     }

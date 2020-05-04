@@ -52,6 +52,7 @@ void Database::readFromFile(const std::string& fname)
 {
     std::ifstream file(fname.c_str());
     readFromFile(file);
+    file.close();
 }
 
 void Database::readFromFile(std::istream& file)
@@ -65,13 +66,13 @@ void Database::readFromFile(std::istream& file)
         std::stringstream in;
         in << buffer;
         if (!buffer.size() ||buffer.substr(0,5) == "First" || buffer.at(0) == '#') continue;
-
         int numfields=0;
         while (!in.eof()) {
             std::string temp;
             in >> temp;
             numfields++;
         }
+        if (numfields == 7) --numfields;
         if (numfields == 6) 
         {
             std::stringstream in1(buffer);
@@ -96,6 +97,7 @@ void Database::writeToFile(const std::string &fname)
 {
     std::ofstream file(fname.c_str());
     writeToFile(file);
+    file.close();
 }
 
 void Database::writeToFile(std::ostream& file)

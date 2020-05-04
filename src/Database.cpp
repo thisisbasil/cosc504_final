@@ -188,6 +188,9 @@ void Database::sortByName()
 void Database::honorStudents()
 {
     std::cout << "Honors students: " << std::endl;
+    std::cout << std::setw(15) << std::left << "First Name"
+              << std::setw(15) << std::left << "Last Name"
+              << std::setw(5) << std::left << "GPA" << std::endl;
     int count = 0;
     for (int i = 0; i < students.size(); ++i)
     {
@@ -196,7 +199,7 @@ void Database::honorStudents()
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
                       << std::setw(15) << students[i].getLastName()
-                      << "GPA: " << students[i].getGPA() << std::endl;
+                      << std::setw(5) << std::setprecision(3) << students[i].getGPA() << std::endl;
         }
     }
     std::cout << "Total number of honors students: " << count << std::endl;
@@ -214,7 +217,10 @@ bool Database::areMultipleStudents(const Student &s)
 // failing students as well
 void Database::warningStudents()
 {
-    std::cout << "Warning students: " << std::endl;
+    std::cout << "Honors students: " << std::endl;
+    std::cout << std::setw(15) << std::left << "First Name"
+              << std::setw(15) << std::left << "Last Name"
+              << std::setw(5) << std::left << "GPA" << std::endl;
     int count = 0;
     for (int i = 0; i < students.size(); ++i)
     {
@@ -223,7 +229,7 @@ void Database::warningStudents()
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
                       << std::setw(15) << students[i].getLastName()
-                      << "GPA: " << students[i].getGPA() << std::endl;
+                      << std::setw(5) << std::setprecision(3) << students[i].getGPA() << std::endl;
         }
     }
     std::cout << "Total number of students on warning: " << count << std::endl;
@@ -232,7 +238,10 @@ void Database::warningStudents()
 // outputs the number of failing students
 void Database::failingStudents()
 {
-    std::cout << "Failing students: " << std::endl;
+    std::cout << "Honors students: " << std::endl;
+    std::cout << std::setw(15) << std::left << "First Name"
+              << std::setw(15) << std::left << "Last Name"
+              << std::setw(5) << std::left << "GPA" << std::endl;
     int count = 0;
     for (int i = 0; i < students.size(); ++i)
     {
@@ -241,7 +250,7 @@ void Database::failingStudents()
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
                       << std::setw(15) << students[i].getLastName()
-                      <<  "GPA: " << students[i].getGPA() << std::endl;
+                      << std::setw(5) << std::setprecision(3) << students[i].getGPA() << std::endl;
         }
     }
     std::cout << "Total number of failing students: " << count << std::endl;

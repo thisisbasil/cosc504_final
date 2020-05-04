@@ -568,15 +568,6 @@ void CreateList(Database& d)
         }
         if (c == 'y')
         {
-            /*std::string fname;
-            while (true)
-            {
-                std::cout << "Enter file name: ";
-                std::cin >> fname;
-                if (!file_exists(fname)) break;
-                std::cout << "File exists! ";
-            }
-            d.writeToFile(fname);*/
             Save(d);
         }
     }

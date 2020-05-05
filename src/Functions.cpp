@@ -666,36 +666,14 @@ void ModifyGrade(Database& d)
 
 void Save(Database& d)
 {
-    std::string fname;
-    while(true)
+    if (d.numStudents() == 0)
     {
-        std::cout << "Enter file name: ";
-        std::cin >> fname;
-        bool exists = file_exists(fname);
-        if (!exists) break;
-        std::cout << "File exists! Overwrite (y/n)? ";
-        char c;
-        while (true)
-        {
-            std::string temp;
-            std::cin >> temp;
-            if (temp.size() == 1)
-            {
-                c = temp[0];
-                c = std::tolower(c);
-                break;
-            }
-            else
-            {
-                std::cout << "Invalid input! ";
-                continue;
-            }
-        }
-        if (c == 'y') break;
-        else if (c == 'n') return;
-        else
-            std::cout << "Invalid input! ";
+        std::cout << "student lit empty!" << std::endl;
+        return;
     }
+    std::string fname;
+    std::cout << "Enter file name (WARNING: will overwrite if file exists): ";
+    std::cin >> fname;
     d.writeToFile(fname);
 }
 

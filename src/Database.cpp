@@ -198,14 +198,14 @@ void Database::sortByName()
 // outputs honors students
 void Database::honorStudents()
 {
-    std::cout << "Honors students: " << std::endl;
+    std::cout << "Honors students (GPA > " << gpaHonor << ") :" << std::endl;
     std::cout << std::setw(15) << std::left << "First Name"
               << std::setw(15) << std::left << "Last Name"
               << std::setw(5) << std::left << "GPA" << std::endl;
     int count = 0;
     for (int i = 0; i < students.size(); ++i)
     {
-        if (students[i].getGPA() >= gpaHonor)
+        if (students[i].getGPA() > gpaHonor)
         {
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
@@ -228,14 +228,14 @@ bool Database::areMultipleStudents(const Student &s)
 // failing students as well
 void Database::warningStudents()
 {
-    std::cout << "Honors students: " << std::endl;
+    std::cout << "Warning students (GPA < " << gpaWarn << ") :" << std::endl;
     std::cout << std::setw(15) << std::left << "First Name"
               << std::setw(15) << std::left << "Last Name"
               << std::setw(5) << std::left << "GPA" << std::endl;
     int count = 0;
     for (int i = 0; i < students.size(); ++i)
     {
-        if (students[i].getGPA() <= gpaWarn)
+        if (students[i].getGPA() < gpaWarn)
         {
             ++count;
             std::cout << std::setw(15) << students[i].getFirstName()
@@ -249,7 +249,7 @@ void Database::warningStudents()
 // outputs the number of failing students
 void Database::failingStudents()
 {
-    std::cout << "Honors students: " << std::endl;
+    std::cout << "Failing students (GPA < " << gpaFail << ") :" << std::endl;
     std::cout << std::setw(15) << std::left << "First Name"
               << std::setw(15) << std::left << "Last Name"
               << std::setw(5) << std::left << "GPA" << std::endl;

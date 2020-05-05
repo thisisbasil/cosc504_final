@@ -675,9 +675,26 @@ void Save(Database& d)
         if (!exists) break;
         std::cout << "File exists! Overwrite (y/n)? ";
         char c;
-        std::cin >> c;
-        c = std::tolower(c);
+        while (true)
+        {
+            std::string temp;
+            std::cin >> temp;
+            if (temp.size() == 1)
+            {
+                c = temp[0];
+                c = std::tolower(c);
+                break;
+            }
+            else
+            {
+                std::cout << "Invalid input! ";
+                continue;
+            }
+        }
         if (c == 'y') break;
+        else if (c == 'n') return;
+        else
+            std::cout << "Invalid input! ";
     }
     d.writeToFile(fname);
 }

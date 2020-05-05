@@ -1,5 +1,7 @@
 ﻿#include "include/Student.h"
+#include "include/Functions.h"
 #include <exception>
+#include <string>
 
 // copy assignment and constructor
 Student& Student::operator=(const Student& other)
@@ -240,8 +242,18 @@ void Student::removeCourse()
     int posn;
     while (true)
     {
-        std::cout << "Selections: ";
-        std::cin >> posn;
+        while (true)
+        {
+            std::string temp;
+            std::cout << "Selections: ";
+            std::cin >> temp;
+            if (isValid(temp))
+            {
+                posn = std::stoi(temp);
+                break;
+            }
+            std::cout << "Invalid entry! Must be numeric! ";
+        }
         if (posn < 1 || posn > courses.size())
         {
             std::cout << "Invalid selection! ";
@@ -266,8 +278,18 @@ void Student::modifyCourse()
     int posn;
     while (true)
     {
-        std::cout << "Selections: ";
-        std::cin >> posn;
+        while (true)
+        {
+            std::string temp;
+            std::cout << "Selections: ";
+            std::cin >> temp;
+            if (isValid(temp))
+            {
+                posn = std::stoi(temp);
+                break;
+            }
+            std::cout << "Invalid selection! Must be numeric! ";
+        }
         if (posn < 1 || posn > courses.size())
         {
             std::cout << "Invalid selection! ";

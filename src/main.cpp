@@ -8,6 +8,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+    cout << "COSC504 Final Project: Basil Huffman" << endl;
     std::string fname;
     if (argc != 2)
     {
@@ -66,7 +67,7 @@ int main(int argc, char** argv)
                       << d.numStudents() << endl; break;
         case 13: CreateList(d); break;
 		case 14: Save(d); break;
-        case 15: d.clearList(); break;
+        case 15: d.clearList(); cout << "Destroying database..." << endl; break;
         case 16: cout << string(50,'\n') << endl; break;
         case 17: exit = true; break;
         default: cout << "Invalid selection!" << endl;

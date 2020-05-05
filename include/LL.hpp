@@ -142,13 +142,13 @@ public:
             return;
         }
         int res = cmp(_data,head->data);
-        if (res < 0)
+        if (res <= 0)
         {
             insert_front(_data);
             return;
         }
         res = cmp(_data,tail->data);
-        if (res > 0)
+        if (res >= 0)
         {
             insert_back(_data);
             return;
@@ -159,11 +159,6 @@ public:
             int res = cmp(_data, curr->data);
             if (res == -1) break;
             curr = curr->next;
-        }
-        if (curr == tail)
-        {
-            insert_back(_data);
-            return;
         }
         Node* temp = new Node(_data);
         temp->next = curr;

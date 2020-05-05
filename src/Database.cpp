@@ -78,6 +78,12 @@ void Database::readFromFile(std::istream& file)
             const char* c = temp.c_str();
             --numfields;
         }
+        if (numfields != 6 && numfields != 3)
+        {
+            std::cout << "File in invalid format! Cannot load!" << std::endl;
+            clearList();
+            return;
+        }
         if (numfields == 6) 
         {
             std::stringstream in1(buffer);

@@ -155,8 +155,8 @@ int Student::gpaCmp(const Student &l, const Student &r)
 
     int gpaL = l.getGPA(), gpaR = r.getGPA();
     if (gpaL == gpaR) return 0;
-    if (gpaL > gpaR) return -1;//1;
-    return 1;//-1;
+    if (gpaL > gpaR) return -1;
+    return 1;
 }
 
 // sort by first name, last name
@@ -214,7 +214,6 @@ double Student::getGPA() const
 {
     double retval = 0.0;
     int hours = 0;
-    //for (const auto& i : courses)
     for (int i = 0; i < courses.size(); ++i)
     {
         double curr = 0;

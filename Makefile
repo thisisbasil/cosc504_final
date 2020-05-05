@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS=-g -Wall -std=c++11 -I.
+CPPFLAGS=-g -w -std=c++11 -I.
 
 default: final
 

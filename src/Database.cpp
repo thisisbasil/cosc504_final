@@ -65,14 +65,19 @@ void Database::readFromFile(std::istream& file)
         course c;
         std::stringstream in;
         in << buffer;
-        if (!buffer.size() ||buffer.substr(0,5) == "First" || buffer.at(0) == '#') continue;
+        if (!buffer.size() || buffer.substr(0,5) == "First" || buffer.at(0) == '#') continue;
         int numfields=0;
+        std::string temp;
         while (!in.eof()) {
-            std::string temp;
+            temp.clear();
             in >> temp;
             numfields++;
         }
-        if (numfields == 7) --numfields;
+        if (numfields == 7)
+        {
+            const char* c = temp.c_str();
+            --numfields;
+        }
         if (numfields == 6) 
         {
             std::stringstream in1(buffer);

@@ -47,7 +47,10 @@ int main(int argc, char** argv)
         cin >> option;
 
         int selection = 0;
-        if (isValid(option)) selection = std::stoi(option);
+        if (isValid(option))
+        {
+            selection = std::stoi(option);
+        }
 
         switch(selection)
         {

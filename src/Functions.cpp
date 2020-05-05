@@ -102,8 +102,18 @@ course inputCourse()
     }
     while (true)
     {
-        std::cout << "Letter grade: ";
-        std::cin >> grade;
+        while (true)
+        {
+            std::string temp;
+            std::cout << "Letter grade: ";
+            std::cin >> temp;
+            if (temp.size() == 1)
+            {
+                grade = temp[0];
+                break;
+            }
+            std::cout << "Invalid input! Must be A,B,C,D,F. ";
+        }
         grade = std::toupper(grade);
         if (grade == 'A' || grade == 'B' || grade == 'C' || grade == 'D' || grade == 'F') break;
         std::cout << "Invalid grade, must be A,B,C,D,F. ";
@@ -176,8 +186,18 @@ void AddCourse(Database& d)
     Student s;
     while(true)
     {
-        std::cout << "Find student by (1) name or by (2) id? ";
-        std::cin >> type;
+        while (true)
+        {
+            std::string temp;
+            std::cout << "Find student by (1) name or by (2) id? ";
+            std::cin >> temp;
+            if (isValid(temp))
+            {
+                type = std::stoi(temp);
+                break;
+            }
+            std::cout << "Invalid input, must be numeric! ";
+        }
         if (type == NAME || type == ID) break;
         std::cout << "Invalid input!\n";
     }
@@ -240,6 +260,7 @@ void RemoveStudent(Database& d)
         {
             std::string temp;
             std::cout << "Delete by (1) name or by (2) id? ";
+            std::cin >> temp;
             if (isValid(temp))
             {
                 type = std::stoi(temp);
@@ -266,7 +287,8 @@ void RemoveStudent(Database& d)
             try
             {
                d.remove(s);
-               std::cout << d << std::endl;
+               std::cout << d << std::endl << "Number of students "
+                         << d.numStudents() << std::endl;
             }
             catch (const std::exception& e)
             {
@@ -313,8 +335,17 @@ void FindGPA(Database& d)
     int type;
     while (true)
     {
-        std::cout << "Find student by (1) name or by (2) id? ";
-        std::cin >> type;
+        while (true)
+        {
+            std::string temp;
+            std::cout << "Find student by (1) name or by (2) id? ";
+            std::cin >> temp;
+            if (isValid(temp))
+            {
+                type = std::stoi(temp);
+                break;
+            }
+        }
         if (type != NAME && type != ID)
             std::cout << "Invalid option!" << std::endl;
         else break;
@@ -472,8 +503,17 @@ void RemoveCourse(Database& d)
     Student s;
     while (loop)
     {
-        std::cout << "Find student by (1) name or by (2) id? ";
-        std::cin >> type;
+        while (true)
+        {
+            std::string temp;
+            std::cout << "Find student by (1) name or by (2) id? ";
+            std::cin >> temp;
+            if (isValid(temp))
+            {
+                type = std::stoi(temp);
+                break;
+            }
+        }
         if (type != NAME && type != ID)
             std::cout << "Invalid input!\n";
         else
